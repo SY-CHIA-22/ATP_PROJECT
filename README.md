@@ -1,2 +1,2 @@
 # ATP_PROJECT
-Africa Talent Programme: Investigating effects of insect residues on plant growth, herbivore performance and plant resistance
+Africa Talent Programme: Edible insect residues, plant growth, herbivore performance, plant resistance, etc.
