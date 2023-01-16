@@ -32,7 +32,9 @@ renv::restore(packages = c( "ggplot2",
                             "colortools", 
                             "GGally", 
                             "lattice", 
-                            "ggthemes"))
+                            "ggthemes", "rmarkdown","DHARMa",
+                            "patchwork"))
+
 
 
 
