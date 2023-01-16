@@ -1,18 +1,16 @@
 ---
-  title: "Install Packages"
+title: "Install Packages"
 author: "S.Y. CHIA"
 date: "January 16 2023"
 output: html_document
 editor_options: 
-  chunk_output_type: console
+chunk_output_type: console
 ---
-  
-  
+
 # install the packages that will be needed to install other packages
   renv::restore(packages = c("devtools",
                              "BiocManager",
                              "remotes"))
-
 
 
 # install some of the basic packages
@@ -32,10 +30,13 @@ renv::restore(packages = c( "ggplot2",
                             "colortools", 
                             "GGally", 
                             "lattice", 
-                            "ggthemes", "rmarkdown","DHARMa",
-                            "patchwork"))
-
-
+                            "ggthemes", 
+                            "rmarkdown",
+                            "DHARMa",
+                            "patchwork", 
+                            "moments", 
+                            "glmmTMB"
+                            ))
 
 
 # install all other packages
