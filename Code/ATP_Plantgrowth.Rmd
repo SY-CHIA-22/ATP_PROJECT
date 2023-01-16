@@ -1,0 +1,115 @@
+---
+title: "Plant Growth Indices"
+author: "S.Y. CHIA"
+date: "January 16 2023"
+output: html_document
+editor_options: 
+chunk_output_type: console
+---
+
+
+# Working directory
+
+getwd()  #Returns the actual working directory
+
+```
+
+getwd()
+
+setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT")
+
+
+```
+
+# Load required R libraries
+
+
+```
+library(ggplot2)
+library(car)
+library(agricolae)
+library("ggpubr")
+library (emmeans)
+library(multcompView)
+library(plotrix) # for bar plots
+library(lme4)
+library(tidyverse)
+library(RColorBrewer)
+library(colortools)
+library("GGally")
+library(lattice)
+library(ggthemes)
+
+
+```
+# Load an prepare the data
+
+## Read in LEAF AREA data - trial 1
+## Read in LEAF AREA data - trial 2
+
+## Read in LEAF NUMBER data - trial 1
+## Read in LEAF NUMBER data - trial 2
+
+```{R}
+
+LA1<-read.table("Leafarea_trial_1.txt",header=TRUE)
+LA2<-read.table("Leafarea_trial_2.txt",header=TRUE)
+LN1<-read.table("Number_of_leaves_trial_1.txt",header=TRUE)
+LN2<-read.table("Number_of_leaves_trial_2.txt",header=TRUE)
+
+
+```
+
+# Save data in appropriate format: 
+## Set the variable characteristics correctly for LA1, LA2, LN1, LN2
+### specify factor and numeric variables
+
+```{R}
+
+
+GrowthData$Treatment <- as.factor(GrowthData$Treatment)
+GrowthData$Time <- as.factor(GrowthData$Time) 
+GrowthData$Plant_ID <- as.factor(GrowthData$Plant_ID)
+
+
+```
+
+# View data structure and summary stats
+
+```{R}
+
+str(GrowthData)
+
+summary ()
+
+
+```
+
+# Visualize data
+## Using boxplots, bar graphs or scatter plots
+
+```{R}
+
+P <- ggplot(data = LA1, aes(x = amendment1, y = leafarea1))
+    P + geom_boxplot()
+    P + geom_col()
+ggplot(data = LA1, aes(x = amendment1, y = leafarea1)) + geom_point()
+
+
+P1 <- ggplot(data = LA2, aes(x = amendment2, y = leafarea2))
+    P1 + geom_boxplot()
+    P1 + geom_col()
+ggplot(data = LA2, aes(x = amendment2, y = leafarea2)) + geom_point()
+
+
+
+P2 <- ggplot(data = LN1, aes(x = amendment1, y = no_leaves1))
+    P2 + geom_boxplot()
+    P2 + geom_col()
+ggplot(data = LN1, aes(x = amendment1, y = no_leaves1)) + geom_point()
+
+
+P3 <- ggplot(data = LN2, aes(x = amendment2, y = no_leaves2))
+    P3 + geom_boxplot()
+    P3 + geom_col()
+ggplot(data = LN2, aes(x = amendment2, y = no_leaves1)) + geom_point()
