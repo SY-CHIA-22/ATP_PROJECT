@@ -35,10 +35,7 @@ library(glmmTMB)
 # Set working directory
 
 ```{r}
-
-setwd("C:/ATP_PROJECT/Data")
-
-
+setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT/Data")
 ```
 
 # Load and prepare the data
@@ -157,9 +154,10 @@ qqline(LN2$no_leaves2, col = "steelblue", lwd = 2)
 ```
 
 # Test for homogeneity of variance
+**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met). If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances**.
 ## Leaf Area (LA)
 
-```{r, echo = TRUE, eval = TRUE}
+```{r, echo = FALSE, eval = FALSE}
 
 leveneTest(leafarea1 ~ amendment1, data = LA1)
 fligner.test(leafarea1 ~ amendment1, data = LA1)
@@ -189,7 +187,7 @@ bartlett.test(no_leaves2 ~ amendment2, data = LN2)
 If the sample size is large enough (n > 30), we can ignore the distribution of the data and use parametric tests. The **central limit theorem** tells us that no matter what distribution things have, 
 the sampling distribution tends to be normal if the sample is large enough (n > 30).
 
-## **Shapiro-Wilk test** (recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505). It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores.
+## **Shapiro-Wilk test** (recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505). It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores. **If the p-value is less than or equal to the significance level, the decision is to reject the null hypothesis and conclude that your data do not follow a normal distribution**.
 ## Leaf Area, Leaf number
 
 ```{r}
