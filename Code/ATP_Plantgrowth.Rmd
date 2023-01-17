@@ -31,6 +31,7 @@ library(rmarkdown)
 library(dgof)
 library(moments)
 library(glmmTMB)
+library(dplyr)
 
 ```
 
@@ -339,16 +340,5 @@ ggsave("boxplot_P7.jpeg", width = 4, height = 3, dpi = 1000)
 
 ```{r}
 
-#sort by player with custom order
-LA1 %>% arrange(factor(amendment1, levels = c('NoFrass', 'BSFF', 'MWF')))
-
-P4a <- ggplot(LA1, aes(amendment1, leafarea1))+ 
-  geom_boxplot(aes(fill = amendment1), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
-  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
-  panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
-P4a + ylim(0, 106)
 
 ```
