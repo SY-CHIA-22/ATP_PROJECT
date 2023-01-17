@@ -1,0 +1,65 @@
+---
+title: "Insect Herbivore Survival and Leaf damage"
+author: "S.Y. CHIA"
+date: "January 17 2023"
+output:
+pdf_document: default
+html_document: default
+editor_options: null
+chunk_output_type: console
+---
+
+# Load required R libraries
+
+```{r}
+
+library(ggplot2)
+library(car)
+library(agricolae)
+library(ggpubr)
+library(emmeans)
+library(multcompView)
+library(plotrix)
+library(lme4)
+library(tidyverse)
+library(RColorBrewer)
+library(GGally)
+library(lattice)
+library(ggthemes)
+library(DHARMa)
+library(rmarkdown)
+library(dgof)
+library(moments)
+library(glmmTMB)
+library(dplyr)
+
+```
+
+# Set working directory
+
+```{r}
+setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT")
+
+```
+
+# Load and prepare the data
+## *Delia radicum:* pupae recovered(DPR), pupal wet weight(DPW), fly emergence (DFE)
+## *lutella xylostella:* pupae recovered(PPR), leaf damage(PLD)
+
+```{r}
+DPR1<-read.table("delia_pupae_recovered_trial_1.txt",header=TRUE)
+DPR2<-read.table("delia_pupae_recovered_trial_2.txt",header=TRUE)
+
+DPW1<-read.table("delia_pupalweight_trial_1.txt",header=TRUE)
+DPW2<-read.table("delia_pupalweight_trial_2.txt",header=TRUE)
+
+DFE1<-read.table("delia_fly_emergence_trial_1.txt",header=TRUE)
+DFE2<-read.table("delia_fly_emergence_trial_2.txt",header=TRUE)
+
+PPR1<-read.table("plutella_pupae_recovered_trial_1.txt",header=TRUE)
+PPR2<-read.table("plutella_pupae_recovered_trial_2.txt",header=TRUE)
+
+PLD1<-read.table("plutella_leaf_damage_score_trial_1.txt",header=TRUE)
+PLD2<-read.table("plutella_leaf_damage_score_trial_2.txt",header=TRUE)
+
+```

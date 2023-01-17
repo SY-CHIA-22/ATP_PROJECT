@@ -3,8 +3,8 @@ title: "Plant Growth Indices"
 author: "S.Y. CHIA"
 date: "January 16 2023"
 output:
-  pdf_document: default
-  html_document: default
+pdf_document: default
+html_document: default
 editor_options: null
 chunk_output_type: console
 ---
