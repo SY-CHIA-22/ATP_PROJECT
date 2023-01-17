@@ -1,0 +1,263 @@
+---
+title: "Plant Growth Indices"
+author: "S.Y. CHIA"
+date: "January 16 2023"
+output: html_document
+editor_options: 
+chunk_output_type: console
+---
+
+# Load required R libraries
+
+```{r}
+
+library(ggplot2)
+library(car)
+library(agricolae)
+library(ggpubr)
+library(emmeans)
+library(multcompView)
+library(plotrix) # for bar plots
+library(lme4)
+library(tidyverse)
+library(RColorBrewer)
+library(GGally)
+library(lattice)
+library(ggthemes)
+library(DHARMa)
+library(rmarkdown)
+library(dgof)
+library(moments)
+library(glmmTMB)
+
+```
+
+# Set working directory
+
+```{r}
+setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT/Data")
+```
+
+# Load and prepare the data
+
+## Read in LEAF AREA data - trial 1
+## Read in LEAF AREA data - trial 2
+
+## Read in LEAF NUMBER data - trial 1
+## Read in LEAF NUMBER data - trial 2
+```{r}
+
+LA1<-read.table("Leafarea_trial_1.txt",header=TRUE)
+LA2<-read.table("Leafarea_trial_2.txt",header=TRUE)
+LN1<-read.table("Number_of_leaves_trial_1.txt",header=TRUE)
+LN2<-read.table("Number_of_leaves_trial_2.txt",header=TRUE)
+
+```
+
+# Save data in appropriate format: 
+## Set the variable characteristics correctly for LA1, LA2, LN1, LN2
+### specify factor and numeric variables
+
+```{r}
+
+LA1$amendment1 <- as.factor(LA1$amendment1)
+LA1$time1 <- as.factor(LA1$time1) 
+LA1$plant_id1 <- as.factor(LA1$plant_id1)
+LA1$trial1 <- as.factor(LA1$trial1)
+LA1$leafarea1 <- as.numeric(LA1$leafarea1)
+LA1$leaflength1 <- as.numeric(LA1$leaflength1)
+LA1$leafwidth1 <- as.numeric(LA1$leafwidth1)
+	
+LA2$amendment2 <- as.factor(LA2$amendment2)
+LA2$time2 <- as.factor(LA2$time2) 
+LA2$plant_id2 <- as.factor(LA2$plant_id2)
+LA2$trial2 <- as.factor(LA2$trial2)
+LA2$leafarea2 <- as.numeric(LA2$leafarea2)
+LA2$leaflength2 <- as.numeric(LA2$leaflength2)
+LA2$leafwidth2 <- as.numeric(LA2$leafwidth2)
+
+LN1$amendment1 <- as.factor(LN1$amendment1)
+LN1$time1 <- as.factor(LN1$time1)
+LN1$block1 <- as.factor(LN1$block1) 
+LN1$plant_id1 <- as.factor(LN1$plant_id1)
+LN1$no_leaves1 <- as.numeric(LN1$no_leaves1)
+
+LN2$amendment2 <- as.factor(LN2$amendment2)
+LN2$time2 <- as.factor(LN2$time2)
+LN2$block2 <- as.factor(LN2$block2) 
+LN2$plant_id2 <- as.factor(LN2$plant_id2)
+LN2$no_leaves2 <- as.numeric(LN2$no_leaves2)
+
+```
+
+# View data structure and summary stats
+
+```{r}
+
+str(LA1)
+summary(LA1)
+
+str(LN1)
+summary(LN2)
+
+```
+
+# Visualize data
+
+## Using boxplots, Q-Q Plots, bar graphs or scatter plots
+   'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles against the actual       quantiles of our variable'.
+   
+### Leaf Area (LA)
+
+```{r, echo = TRUE, eval = TRUE}
+
+P <- ggplot(data = LA1, aes(x = amendment1, y = leafarea1))
+    P + geom_boxplot()
+    P + geom_col()
+ggplot(data = LA1, aes(x = amendment1, y = leafarea1)) + geom_point()
+
+qqnorm(LA1$leafarea1, pch = 1, frame = FALSE)
+qqline(LA1$leafarea1, col = "steelblue", lwd = 2)
+
+
+P1 <- ggplot(data = LA2, aes(x = amendment2, y = leafarea2))
+    P1 + geom_boxplot()
+    P1 + geom_col()
+ggplot(data = LA2, aes(x = amendment2, y = leafarea2)) + geom_point()
+
+qqnorm(LA2$leafarea2, pch = 1, frame = FALSE)
+qqline(LA2$leafarea2, col = "steelblue", lwd = 2)
+
+```
+
+### Number of leaves (LN)
+
+```{r, echo = TRUE, eval = TRUE}
+
+P2 <- ggplot(data = LN1, aes(x = amendment1, y = no_leaves1))
+    P2 + geom_boxplot()
+    P2 + geom_col()
+ggplot(data = LN1, aes(x = amendment1, y = no_leaves1)) + geom_point()
+
+
+P3 <- ggplot(data = LN2, aes(x = amendment2, y = no_leaves2))
+    P3 + geom_boxplot()
+    P3 + geom_col()
+
+    
+ggplot(data = LN1, aes(x = amendment1, y = no_leaves1)) + geom_point()
+ggplot(data = LN2, aes(x = amendment2, y = no_leaves2)) + geom_point()
+
+qqnorm(LN1$no_leaves1, pch = 1, frame = FALSE)
+qqline(LN2$no_leaves2, col = "steelblue", lwd = 2)
+
+```
+
+# Test for homogeneity of variance
+**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met). If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances**.
+## Leaf Area (LA)
+
+```{r, echo = FALSE, eval = FALSE}
+
+leveneTest(leafarea1 ~ amendment1, data = LA1)
+fligner.test(leafarea1 ~ amendment1, data = LA1)
+bartlett.test(leafarea1 ~ amendment1, data = LA1) 
+
+leveneTest(leafarea2 ~ amendment2, data = LA2)
+fligner.test(leafarea2 ~ amendment2, data = LA2)
+bartlett.test(leafarea2~ amendment2, data = LA2) 
+
+```
+
+## Homogeneity - Number of leaves (LN)
+
+```{r}
+leveneTest(no_leaves1 ~ amendment1, data = LN1)
+fligner.test(no_leaves1 ~ amendment1, data = LN1)
+bartlett.test(no_leaves1 ~ amendment1, data = LN1)
+
+leveneTest(no_leaves2 ~ amendment2, data = LN2)
+fligner.test(no_leaves2 ~ amendment2, data = LN2)
+bartlett.test(no_leaves2 ~ amendment2, data = LN2) 
+
+```
+
+# Test for Normality of variances: 
+
+If the sample size is large enough (n > 30), we can ignore the distribution of the data and use parametric tests. The **central limit theorem** tells us that no matter what distribution things have, 
+the sampling distribution tends to be normal if the sample is large enough (n > 30).
+
+## **Shapiro-Wilk test** (recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505). It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores. **If the p-value is less than or equal to the significance level, the decision is to reject the null hypothesis and conclude that your data do not follow a normal distribution**.
+## Leaf Area, Leaf number
+
+```{r}
+shapiro.test(LA1$leafarea1)
+shapiro.test(LA2$leafarea2)
+
+shapiro.test(LN1$no_leaves1)
+shapiro.test(LN2$no_leaves2)
+
+```
+#  model seection
+
+```{r}
+
+lmer.LA1 <- lmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LA1)
+glmmTMB.LA1 <- glmmTMB(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LA1)
+gamma.LA1 <- glmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LA1)
+AIC(lmer.LA1, glmmTMB.LA1, gamma.LA1)
+
+lmer.LA2 <- lmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), data = LA2)
+glmmTMB.LA2 <- glmmTMB(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), data = LA2)
+gamma.LA2 <- glmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LA2)
+AIC(lmer.LA2, glmmTMB.LA2, gamma.LA2)
+
+
+lmer.LN1 <- lmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LN1)
+glmmTMB.LN1 <- glmmTMB(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LN1)
+gamma.LN1 <- glmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LN1)
+AIC(lmer.LN1, glmmTMB.LN1, gamma.LN1)
+
+lmer.LN2 <- lmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), data = LN2)
+glmmTMB.LN2 <- glmmTMB(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), data = LN2)
+gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
+AIC(lmer.LN2, glmmTMB.LN2, gamma.LN2)
+
+```
+
+# Data analysis
+## Leaf Area data:  run the selected model
+### Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.
+
+```{r}
+
+fit.LA1 <- lmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1) )
+summary(fit.LA1)
+Anova(fit.LA1)
+
+```
+
+# Posthoc test
+## emmeans (estimated marginal means) 
+
+```{r}
+HSD_test <- emmeans(ref_grid(f2, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(f2, regrid = "response"), pairwise ~ amendment1) 
+
+
+```
+# Plots for leafarea. cm
+
+```{r, echo=TRUE, eval=TRUE}
+
+P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
+  geom_boxplot(aes(fill = amendment1), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#BDBDBD", "#BDBDBD","#BDBDBD"))
+P4 + ylim(0,17)
+
+ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
+
