@@ -35,7 +35,7 @@ library(glmmTMB)
 # Set working directory
 
 ```{r}
-setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT/Data")
+setwd("C:/ATP_PROJECT/Data")
 ```
 
 # Load and prepare the data
@@ -78,13 +78,13 @@ LA2$leafwidth2 <- as.numeric(LA2$leafwidth2)
 
 LN1$amendment1 <- as.factor(LN1$amendment1)
 LN1$time1 <- as.factor(LN1$time1)
-LN1$block1 <- as.factor(LN1$block1) 
+LN1$trial1 <- as.factor(LN1$trial1) 
 LN1$plant_id1 <- as.factor(LN1$plant_id1)
 LN1$no_leaves1 <- as.numeric(LN1$no_leaves1)
 
 LN2$amendment2 <- as.factor(LN2$amendment2)
 LN2$time2 <- as.factor(LN2$time2)
-LN2$block2 <- as.factor(LN2$block2) 
+LN2$trial2 <- as.factor(LN2$trial2) 
 LN2$plant_id2 <- as.factor(LN2$plant_id2)
 LN2$no_leaves2 <- as.numeric(LN2$no_leaves2)
 
@@ -97,7 +97,13 @@ LN2$no_leaves2 <- as.numeric(LN2$no_leaves2)
 str(LA1)
 summary(LA1)
 
+str(LA2)
+summary(LA2)
+
 str(LN1)
+summary(LN1)
+
+str(LN2)
 summary(LN2)
 
 ```
@@ -107,7 +113,7 @@ summary(LN2)
 ## Using boxplots, Q-Q Plots, bar graphs or scatter plots
    'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles against the actual       quantiles of our variable'.
    
-### Leaf Area (LA)
+### Leaf Area (LA): *sample sizes are very large (>30), therefore I ignore the test for normality*
 
 ```{r, echo = TRUE, eval = TRUE}
 
@@ -130,7 +136,7 @@ qqline(LA2$leafarea2, col = "steelblue", lwd = 2)
 
 ```
 
-### Number of leaves (LN)
+### Number of leaves (LN): *sample sizes are very large (>30), therefore I ignore the test for normality*
 
 ```{r, echo = TRUE, eval = TRUE}
 
@@ -198,7 +204,10 @@ shapiro.test(LN1$no_leaves1)
 shapiro.test(LN2$no_leaves2)
 
 ```
-#  model seection
+
+#  Model seection
+
+## *Gamma distribution is best based on the AIC values*
 
 ```{r}
 
@@ -226,27 +235,53 @@ AIC(lmer.LN2, glmmTMB.LN2, gamma.LN2)
 ```
 
 # Data analysis
-## Leaf Area data:  run the selected model
+
+## Leaf Area  and Number of leaves data
 ### Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.
+
+### Selected model *(Gamma distribution)*
+
+#### *effect of soil amendment was significant on leaf area and number of leaves*
 
 ```{r}
 
-fit.LA1 <- lmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1) )
-summary(fit.LA1)
-Anova(fit.LA1)
+gamma.LA1 <- glmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LA1)
+summary(gamma.LA1)
+Anova(gamma.LA1)
+
+gamma.LA2 <- glmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LA2)
+summary(gamma.LA2)
+Anova(gamma.LA2)
+
+
+gamma.LN1 <- glmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"), data = LN1)
+summary(gamma.LN1)
+Anova(gamma.LN1)
+
+gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
+summary(gamma.LN2)
+Anova(gamma.LN2)
 
 ```
 
 # Posthoc test
-## emmeans (estimated marginal means) 
+## *Tukey test using the emmeans (estimated marginal means) package*
 
 ```{r}
-HSD_test <- emmeans(ref_grid(f2, regrid = "response"), pairwise ~ amendment1)
-emmeans(ref_grid(f2, regrid = "response"), pairwise ~ amendment1) 
+HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1) 
 
+HSD_test <- emmeans(ref_grid(gamma.LA2, regrid = "response"), pairwise ~ amendment2)
+emmeans(ref_grid(gamma.LA2, regrid = "response"), pairwise ~ amendment2)
+
+HSD_test <- emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
+
+HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
+emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2) 
 
 ```
-# Plots for leafarea. cm
+# Plots for leafarea (cm^2) , Number of leaves
 
 ```{r, echo=TRUE, eval=TRUE}
 
@@ -256,8 +291,47 @@ P4 <- ggplot(LA1, aes(amendment1, leafarea1))+
   theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
   theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
   panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#BDBDBD", "#BDBDBD","#BDBDBD"))
-P4 + ylim(0,17)
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P4 + ylim(0, 106)
 
 ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
+
+
+P5 <- ggplot(LA2, aes(amendment2, leafarea2))+ 
+  geom_boxplot(aes(fill = amendment2), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  theme_bw() + theme(panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#BCD2E8", "#BCD2E8","#BCD2E8")) # Beau Blue
+P5 + ylim(0, 104)
+
+ggsave("boxplot_P5.jpeg", width = 4, height = 3, dpi = 1000)
+
+
+P6 <- ggplot(LN1, aes(amendment1, no_leaves1))+ 
+  geom_boxplot(aes(fill = amendment1), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Number of leaves")+
+  theme_bw() + theme(panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P6 + ylim(0, 14)
+
+ggsave("boxplot_P6.jpeg", width = 4, height = 3, dpi = 1000)
+
+
+P7 <- ggplot(LN2, aes(amendment2, no_leaves2))+ 
+  geom_boxplot(aes(fill = amendment2), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Number of leaves")+
+  theme_bw() + theme(panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#BCD2E8", "#BCD2E8","#BCD2E8"))# Beau Blue
+P7 + ylim(0, 14)
+
+ggsave("boxplot_P7.jpeg", width = 4, height = 3, dpi = 1000)
+
+```
+
 
