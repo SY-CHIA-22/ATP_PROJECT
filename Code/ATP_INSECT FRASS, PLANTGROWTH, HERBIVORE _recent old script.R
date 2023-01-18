@@ -2013,7 +2013,7 @@ percent.em <- DFly$flies/DFly$pupae
 
 DFly <- cbind(percent.em, DFly)
 
-#look at New percent data (percent seed germination)
+#look at New percent data
 DFly
 
 #fit model: logistic regression model using the binary function
