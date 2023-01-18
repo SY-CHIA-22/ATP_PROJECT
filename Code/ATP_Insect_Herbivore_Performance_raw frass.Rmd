@@ -33,18 +33,19 @@ library(dgof)
 library(moments)
 library(glmmTMB)
 library(dplyr)
+library(MASS)
 
 ```
 
 # Set working directory
 
 ```{r}
-setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT")
-
+setwd("C:/ATP_PROJECT/Data")
 ```
 
 # Load and prepare the data: *Delia radicum*
-## *Delia radicum:* pupae recovered(DPR), pupal wet weight(DPW), fly emergence (DFE)
+
+pupae recovered(DPR), pupal wet weight(DPW), fly emergence (DFE)
 
 ```{r}
 DPR1<-read.table("delia_pupae_recovered_trial_1.txt",header=TRUE)
@@ -92,14 +93,14 @@ DFE1$trial1 <- as.factor(DFE1$trial1)
 DFE1$days1 <- as.numeric(DFE1$days1)
 DFE1$pupae1 <- as.numeric(DFE1$pupae1)
 DFE1$flies1 <- as.numeric(DFE1$flies1)
-DFE1$percent_per_day1 <- as.numeric(DPW2$percent_per_day1)
+DFE1$percent_per_day1 <- as.numeric(DFE1$percent_per_day1)
 
 DFE2$amendment2 <- as.factor(DFE2$amendment2)
 DFE2$trial2 <- as.factor(DFE2$trial2)
 DFE2$days2 <- as.numeric(DFE2$days2)
 DFE2$pupae2 <- as.numeric(DFE2$pupae2)
 DFE2$flies2 <- as.numeric(DFE2$flies2)
-DFE2$percent_per_day2 <- as.numeric(DPW2$percent_per_day2)
+DFE2$percent_per_day2 <- as.numeric(DFE2$percent_per_day2)
 
 ```
 
@@ -154,6 +155,8 @@ PLD2$score2 <- as.numeric(PLD2$score2)
 # View data structure and summary stats
 
   *Delia radicum*
+  
+  **Median is greater than the Mean for DPR1, DPR2, DPW1, DPW2:** This means that the data are "skewed to the left"
 
 ```{r}
 str(DPR1)
@@ -193,12 +196,14 @@ summary(PLD1)
 str(PLD2)
 summary(PLD2)
 
+
 ```
 
 # Visualize data - *Delia radicum*
 
 Use boxplots, Q-Q Plots, bar graphs 
-'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles   against the actual quantiles of our variable'.
+'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: 
+plotting theoretical quantiles against the actual quantiles of our variable'.
    
 *sample sizes are very large (>30), therefore I ignore the test for normality*
 
@@ -307,35 +312,41 @@ qqline(PLD2$score2, col = "steelblue", lwd = 2)
 
 # Test for homogeneity of variance - *Delia radicum*
 
-**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
+**If the p-value for the 'Levene test' is greater than 0.05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
 
 **If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances.**
 
+**Pupae recovered and fly emergence data (trials 1 & 2) have homogeneous variances**
+
+**Pupal weight data (trials 1 & 2) do NOT have homogeneous variances**
+
+This is not considered here because GLM instead of ANOVA is applied**
+
 ```{r}
 
-leveneTest(tot_larv_pupa1 ~ amendment1, data = DPR1)
+leveneTest(tot_larv_pupa1 ~ amendment1, data = DPR1) # homogeneous
 fligner.test(tot_larv_pupa1 ~ amendment1, data = DPR1)
 bartlett.test(tot_larv_pupa1 ~ amendment1, data = DPR1) 
 
-leveneTest(tot_larv_pupa2 ~ amendment2, data = DPR2)
+leveneTest(tot_larv_pupa2 ~ amendment2, data = DPR2) # homogeneous
 fligner.test(tot_larv_pupa2 ~ amendment2, data = DPR2)
 bartlett.test(tot_larv_pupa2~ amendment2, data = DPR2)
 
-leveneTest(pupalweight1 ~ amendment1, data = DPW1)
+leveneTest(pupalweight1 ~ amendment1, data = DPW1) # not homogeneous
 fligner.test(pupalweight1 ~ amendment1, data = DPW1)
 bartlett.test(pupalweight1 ~ amendment1, data = DPW1) 
 
-leveneTest(pupalweight2 ~ amendment2, data = DPW2)
+leveneTest(pupalweight2 ~ amendment2, data = DPW2) # not homogeneous
 fligner.test(pupalweight2 ~ amendment2, data = DPW2)
 bartlett.test(pupalweight2~ amendment2, data = DPW2)
 
-leveneTest(percent_per_day1 ~ amendment1, data = DFE1)
+leveneTest(percent_per_day1 ~ amendment1, data = DFE1) # homogeneous
 fligner.test(percent_per_day1 ~ amendment1, data = DFE1)
 bartlett.test(percent_per_day1 ~ amendment1, data = DFE1) 
 
-leveneTest(percent_per_day2 ~ amendment2, data = DFE2)
+leveneTest(percent_per_day2 ~ amendment2, data = DFE2) # homogeneous
 fligner.test(percent_per_day2 ~ amendment2, data = DFE2)
-bartlett.test(percent_per_day2~ amendment2, data = DFE2)
+bartlett.test(percent_per_day2 ~ amendment2, data = DFE2)
 
 ```
 
@@ -376,14 +387,14 @@ Shapiro-Wilk test **(recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem
 
 ```{r}
 
-shapiro.test(DPR1$tot_larv_pupa1)
-shapiro.test(DPR2$tot_larv_pupa2)
+shapiro.test(DPR1$tot_larv_pupa1) # not normally distributed
+shapiro.test(DPR2$tot_larv_pupa2) # normally distributed
 
-shapiro.test(DPW1$pupalweight1)
-shapiro.test(DPW2$pupalweight2)
+shapiro.test(DPW1$pupalweight1) # not normally distributed
+shapiro.test(DPW2$pupalweight2) # not normally distributed
 
-shapiro.test(DFE1$percent_per_day1)
-shapiro.test(DFE2$percent_per_day2)
+shapiro.test(DFE1$percent_per_day1) # not normally distributed
+shapiro.test(DFE2$percent_per_day2) # not normally distributed
 
 ```
 
@@ -403,7 +414,8 @@ shapiro.test(PDL2$score2)
 #  Model seection - *Delia radicum*
 
 ```{r}
-# Overdispersion function
+
+# Over dispersion function
 Overdisp_fun <- function (model) {
 	rdf <- df.residual(model)
 	rp <- residuals(model, type = "pearson")
@@ -414,41 +426,57 @@ Overdisp_fun <- function (model) {
 	}
 
 lm.DPR1 <- lm(tot_larv_pupa1 ~ amendment1, data = DPR1)
-glmp.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, family = poisson, data = DPR1)
-gamma.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, family = Gamma(link = "log"), data = DPR1)
+pois.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, data = DPR1, family = poisson) 
+qpois.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, data = DPR1, family = quasipoisson) # nbin.DPR1
 glm.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, data = DPR1)
-AIC(lm.DPR1, glmp.DPR1, gamma.DPR1, glm.DPR1)
+nbin.DPR1 <- glm.nb(tot_larv_pupa1 ~ amendment1, data = DPR1)
+AIC(lm.DPR1, pois.DPR1, qpois.DPR1, glm.DPR1, nbin.DPR1)
+glm.nb
 
-# Check overdispersion. The ratio should be around 1
-Overdisp_fun(glmp.PPR1)
+# Check over dispersion. The ratio should be around 1
+Overdisp_fun(glmp.DPR1)
 
 lm.DPR2 <- lm(tot_larv_pupa2 ~ amendment2, data = DPR2)
-glmp.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, family = poisson, data = DPR2)
-gamma.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, family = Gamma(link = "log"), data = DPR2)
+pois.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, data = DPR2, family = poisson) # pois.DPR2	
+qpois.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, data = DPR2, family = quasipoisson)
 glm.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, data = DPR2)
-AIC(lm.DPR2, gamma.DPR2, glm.DPR2)
+nbin.DPR2 <- glm.nb(tot_larv_pupa2 ~ amendment2, data = DPR2)
+AIC(lm.DPR2, pois.DPR2, qpois.DPR2, glm.DPR2, nbin.DPR2)
 
-Overdisp_fun(glmp.PPR1)
+Overdisp_fun(glmp.DPR2)
 
 lm.DPW1 <- lm(pupalweight1 ~ amendment1, data = DPW1)
 gamma.DPW1 <- glm(pupalweight1 ~ amendment1, family = Gamma (link = "log"), data = DPW1)
-glm.DPW1 <- glm(pupalweight1 ~ amendment1, data = DPW1)
+glm.DPW1 <- glm(pupalweight1 ~ amendment1, data = DPW1) # glm.DPW1
 AIC(lm.DPW1, gamma.DPW1, glm.DPW1)
 
 lm.DPW2 <- lm(pupalweight2 ~ amendment2, data = DPW2)
 gamma.DPW2 <- glm(pupalweight2 ~ amendment2, family = Gamma (link = "log"), data = DPW2)
-glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2)
+glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2) # glm.DPW2
 AIC(lm.DPW2, gamma.DPW2, glm.DPW2)
 
-lm.DFE1 <- lm(percent_per_day1 ~ amendment1, data = DFE1)
-gamma.DFE1 <- glm(percent_per_day1 ~ amendment1, family = Gamma(link = "log"), data = DFE1)
-glm.DFE1 <- glm(percent_per_day1 ~ amendment1, data = DFE1)
-AIC(lm.DFE1, gamma.DFE1, glm.DFE1)
 
+# Calculate percentage emergence of D. radicum
+percent.em1 <- DFE1$flies1/DFE1$pupae1
+DFE1 <- cbind(percent.em1, DFE1)
+DFE1
+
+percent.em2 <- DFE2$flies2/DFE2$pupae2
+DFE2 <- cbind(percent.em2, DFE2)
+DFE2
+
+#fit models
+lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1) # logistic regression model using binary function
+lm.DFE1 <- lm(percent_per_day1 ~ amendment1, data = DFE1)
+gamma.DFE1 <- glm(percent_per_day1 ~ amendment1, family = Gamma(link = "log"), data = DFE1) # gamma.DFE1
+glm.DFE1 <- glm(percent_per_day1 ~ amendment1, data = DFE1)
+AIC(lglm.DFE1, lm.DFE1, gamma.DFE1, glm.DFE1)
+
+lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2)
 lm.DFE2 <- lm(percent_per_day2 ~ amendment2, data = DFE2 )
-gamma.DFE2 <- glm(percent_per_day2 ~ amendment2, family = Gamma(link = "log"), data = DFE2)
+gamma.DFE2 <- glm(percent_per_day2 ~ amendment2, family = Gamma(link = "log"), data = DFE2) # gamma.DFE2
 glm.DFE2 <- glm(percent_per_day2 ~ amendment2, data = DFE2)
-AIC(lm.DFE2, gamma.DFE2, glm.DFE2)
+AIC(lglm.DFE2, lm.DFE2, gamma.DFE2, glm.DFE2)
 
 ```
 
@@ -502,8 +530,97 @@ AIC(lm.PLD2, gamma.PLD2, glm.PLD2)
 
 ```{r}
 
+qpois.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, data = DPR1, family = quasipoisson)
+summary(qpois.DPR1)
+Anova(qpois.DPR1)
+
+pois.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, data = DPR2, family = poisson)
+summary(pois.DPR2)
+Anova(pois.DPR2)
+
+glm.DPW1 <- glm(pupalweight1 ~ amendment1, data = DPW1)
+summary(glm.DPW1)
+Anova(glm.DPW1)
+
+glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2)
+summary(glm.DPW2)
+Anova(glm.DPW2)
+
+lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1)
+summary(lglm.DFE1)
+Anova(lglm.DFE1)
+
+lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2)
+summary(lglm.DFE2)
+Anova(lglm.DFE2)
 
 
+
+```
+
+
+# Posthoc test - Delia radicum
+
+**Tukey test using the emmeans (estimated marginal means) package**
+
+
+```{r}
+
+HSD_test.DPW1 <- emmeans(ref_grid(glm.DPW1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(glm.DPW1, regrid = "response"), pairwise ~ amendment1)
+
+HSD_test.lglm.DFE1 <- emmeans(ref_grid(lglm.DFE1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(lglm.DFE1, regrid = "response"), pairwise ~ amendment1)
+
+```
+
+
+# Plots for Delia radicum
+
+```{r, echo=TRUE, eval=TRUE}
+
+P18 <- ggplot(DPR1, aes(amendment1, tot_larv_pupa1))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Delia radicum (larvae + pupae) recovered per pot")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P18 + ylim (0, 10)
+
+ggsave("boxplot_P18.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P19 <- ggplot(DPR2, aes(amendment2, tot_larv_pupa2))+ 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Delia radicum (larvae + pupae) recovered per pot")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P19 + ylim (0, 10)
+
+ggsave("boxplot_P19.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P20 <- ggplot(DPW1, aes(amendment1, pupalweight1))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P20 + ylim (0, 16)
+
+ggsave("boxplot_P20.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P21 <- ggplot(DPW2, aes(amendment2, pupalweight2))+ 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P21 + ylim (0, 17)
+
+ggsave("boxplot_P21.jpeg", width = 5, height = 4, dpi = 1000)
 
 ```
 
@@ -529,30 +646,7 @@ AIC(lm.PLD2, gamma.PLD2, glm.PLD2)
 HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
 emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
 
-
-
 ```
-
-
-# Plots for Delia radicum
-
-```{r, echo=TRUE, eval=TRUE}
-
-P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
-  geom_boxplot(aes(fill = amendment1), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
-  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
-  panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
-P4 + ylim(0, 106)
-
-ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
-
-
-
-```
-
 
 # Plots for Plutella xylostella
 
