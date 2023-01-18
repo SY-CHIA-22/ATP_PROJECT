@@ -1,5 +1,6 @@
 ---
-title: "Insect Herbivore Survival and Leaf damage"
+title: "Insect Herbivore Survival and Leaf damage": 
+"Delia radicum; Plutella xylostella; Brassica rapa"
 author: "S.Y. CHIA"
 date: "January 17 2023"
 output:
@@ -42,9 +43,8 @@ setwd("C:/Users/admin/OneDrive/Desktop/ATP_PROJECT")
 
 ```
 
-# Load and prepare the data
+# Load and prepare the data: *Delia radicum*
 ## *Delia radicum:* pupae recovered(DPR), pupal wet weight(DPW), fly emergence (DFE)
-## *lutella xylostella:* pupae recovered(PPR), leaf damage(PLD)
 
 ```{r}
 DPR1<-read.table("delia_pupae_recovered_trial_1.txt",header=TRUE)
@@ -56,6 +56,59 @@ DPW2<-read.table("delia_pupalweight_trial_2.txt",header=TRUE)
 DFE1<-read.table("delia_fly_emergence_trial_1.txt",header=TRUE)
 DFE2<-read.table("delia_fly_emergence_trial_2.txt",header=TRUE)
 
+```
+
+# Save data in appropriate format - *Delia radicum*
+
+  Set the variable characteristics correctly 					
+
+```{r}
+DPR1$amendment1 <- as.factor(DPR1$amendment1)
+DPR1$trial1 <- as.factor(DPR1$trial1)
+DPR1$plant_id1 <- as.factor(DPR1$plant_id1)
+DPR1$larvae1 <- as.numeric(DPR1$larvae1)
+DPR1$pupae1 <- as.numeric(DPR1$pupae1)
+DPR1$tot_larv_pupa1 <- as.numeric(DPR1$tot_larv_pupa1)
+
+DPR2$amendment2 <- as.factor(DPR2$amendment2)
+DPR2$trial2 <- as.factor(DPR2$trial2)
+DPR2$plant_id2 <- as.factor(DPR2$plant_id2)
+DPR2$larvae2 <- as.numeric(DPR2$larvae2)
+DPR2$pupae2 <- as.numeric(DPR2$pupae2)
+DPR2$tot_larv_pupa2 <- as.numeric(DPR2$tot_larv_pupa2)
+
+DPW1$amendment1 <- as.factor(DPW1$amendment1)
+DPW1$trial1 <- as.factor(DPW1$trial1)
+DPW1$sample1 <- as.factor(DPW1$sample1)
+DPW1$pupalweight1 <- as.numeric(DPW1$pupalweight1)
+
+DPW2$amendment2 <- as.factor(DPW2$amendment2)
+DPW2$trial2 <- as.factor(DPW2$trial2)
+DPW2$sample2 <- as.factor(DPW2$sample2)
+DPW2$pupalweight2 <- as.numeric(DPW2$pupalweight2)
+
+DFE1$amendment1 <- as.factor(DFE1$amendment1)
+DFE1$trial1 <- as.factor(DFE1$trial1)
+DFE1$days1 <- as.numeric(DFE1$days1)
+DFE1$pupae1 <- as.numeric(DFE1$pupae1)
+DFE1$flies1 <- as.numeric(DFE1$flies1)
+DFE1$percent_per_day1 <- as.numeric(DPW2$percent_per_day1)
+
+DFE2$amendment2 <- as.factor(DFE2$amendment2)
+DFE2$trial2 <- as.factor(DFE2$trial2)
+DFE2$days2 <- as.numeric(DFE2$days2)
+DFE2$pupae2 <- as.numeric(DFE2$pupae2)
+DFE2$flies2 <- as.numeric(DFE2$flies2)
+DFE2$percent_per_day2 <- as.numeric(DPW2$percent_per_day2)
+
+```
+
+# Load and prepare the data: *Plutella xylostella*
+
+  pupae recovered (PPR), leaf damage (PLD)
+
+```{r}
+
 PPR1<-read.table("plutella_pupae_recovered_trial_1.txt",header=TRUE)
 PPR2<-read.table("plutella_pupae_recovered_trial_2.txt",header=TRUE)
 
@@ -63,3 +116,455 @@ PLD1<-read.table("plutella_leaf_damage_score_trial_1.txt",header=TRUE)
 PLD2<-read.table("plutella_leaf_damage_score_trial_2.txt",header=TRUE)
 
 ```
+
+# Save data in appropriate format
+
+### *Delia radicum*
+
+ Set the variable characteristics correctly
+
+```{r}
+
+PPR1$amendment1 <- as.factor(PPR1$amendment1)
+PPR1$trial1 <- as.factor(PPR1$trial1)
+PPR1$plant_id1 <- as.factor(PPR1$plant_id1)
+PPR1$date1 <- as.factor(PPR1$date1)
+PPR1$time1 <- as.factor(PPR1$time1)
+PPR1$pupae1 <- as.numeric(PPR1$pupae1)
+
+PPR2$amendment2 <- as.factor(PPR2$amendment2)
+PPR2$trial2 <- as.factor(PPR2$trial2)
+PPR2$plant_id2 <- as.factor(PPR2$plant_id2)
+PPR2$date2 <- as.factor(PPR1$date2)
+PPR2$time2 <- as.factor(PPR2$time2)
+PPR2$pupae2 <- as.numeric(PPR2$pupae2)
+
+PLD1$amendment1 <- as.factor(PLD1$amendment1)
+PLD1$trial1 <- as.factor(PLD1$trial1)
+PLD1$plant_id1 <- as.factor(PLD1$plant_id1)
+PLD1$score1 <- as.numeric(PLD1$score1)
+
+PLD2$amendment2 <- as.factor(PLD2$amendment2)
+PLD2$trial2 <- as.factor(PLD2$trial2)
+PLD2$plant_id2 <- as.factor(PLD2$plant_id2)
+PLD2$score2 <- as.numeric(PLD2$score2)
+
+```
+
+# View data structure and summary stats
+
+  *Delia radicum*
+
+```{r}
+str(DPR1)
+summary(DPR1)
+
+str(DPR2)
+summary(DPR2)
+
+str(DPW1)
+summary(DPW1)
+
+str(DPW2)
+summary(DPW2)
+
+str(DFE1)
+summary(DFE1)
+
+str(DFE2)
+summary(DFE2)
+
+```
+
+# View data structure and summary stats
+
+*Plutella xylostella*
+
+```{r}
+str(PPR1)
+summary(PPR1)
+
+str(PPR2)
+summary(PPR2)
+
+str(PLD1)
+summary(PLD1)
+
+str(PLD2)
+summary(PLD2)
+
+```
+
+# Visualize data - *Delia radicum*
+
+Use boxplots, Q-Q Plots, bar graphs 
+'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles   against the actual quantiles of our variable'.
+   
+*sample sizes are very large (>30), therefore I ignore the test for normality*
+
+```{r, echo = TRUE, eval = TRUE}
+
+P8 <- ggplot(data = DPR1, aes(x = amendment1, y = tot_larv_pupa1))
+    P8 + geom_boxplot()
+    P8 + geom_col()
+ggplot(data = DPR1, aes(x = amendment1, y = tot_larv_pupa1)) + geom_point()
+
+qqnorm(DPR1$tot_larv_pupa1, pch = 1, frame = FALSE)
+qqline(DPR1$tot_larv_pupa1, col = "steelblue", lwd = 2)
+
+
+P9 <- ggplot(data = DPR2, aes(x = amendment2, y = tot_larv_pupa2))
+    P9 + geom_boxplot()
+    P9 + geom_col()
+ggplot(data = DPR2, aes(x = amendment2, y = tot_larv_pupa2)) + geom_point()
+
+qqnorm(DPR2$tot_larv_pupa2, pch = 1, frame = FALSE)
+qqline(DPR2$tot_larv_pupa2, col = "steelblue", lwd = 2)
+
+
+P10 <- ggplot(data = DPW1, aes(x = amendment1, y = pupalweight1))
+    P10 + geom_boxplot()
+    P10 + geom_col()
+ggplot(data = DPW1, aes(x = amendment1, y = pupalweight1)) + geom_point()
+
+qqnorm(DPW1$pupalweight1, pch = 1, frame = FALSE)
+qqline(DPW1$pupalweight1, col = "steelblue", lwd = 2)
+
+
+P11 <- ggplot(data = DPW2, aes(x = amendment2, y = pupalweight2))
+    P11 + geom_boxplot()
+    P11 + geom_col()
+ggplot(data = DPW2, aes(x = amendment2, y = pupalweight2)) + geom_point()
+
+qqnorm(DPW2$pupalweight2, pch = 1, frame = FALSE)
+qqline(DPW2$pupalweight2, col = "steelblue", lwd = 2)
+
+
+P12 <- ggplot(data = DFE1, aes(x = amendment1, y = percent_per_day1))
+    P12 + geom_boxplot()
+    P12 + geom_col()
+ggplot(data = DFE1, aes(x = amendment1, y = percent_per_day1)) + geom_point()
+
+qqnorm(DFE1$percent_per_day1, pch = 1, frame = FALSE)
+qqline(DFE1$percent_per_day1, col = "steelblue", lwd = 2)
+
+
+P13 <- ggplot(data = DFE2, aes(x = amendment2, y = percent_per_day2))
+    P13 + geom_boxplot()
+    P13 + geom_col()
+ggplot(data = DFE2, aes(x = amendment2, y = percent_per_day2)) + geom_point()
+
+qqnorm(DFE2$percent_per_day2, pch = 1, frame = FALSE)
+qqline(DFE2$percent_per_day2, col = "steelblue", lwd = 2)
+
+```
+
+# Visualize data - *Plutella xylostella*
+
+Use boxplots, Q-Q Plots, bar graphs 
+'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles   against the actual quantiles of our variable'.
+   
+*sample sizes are very large (>30), therefore I ignore the test for normality*
+
+```{r, echo=TRUE, eval=TRUE}
+
+P14 <- ggplot(data = PPR1, aes(x = amendment1, y = pupae1))
+    P14 + geom_boxplot()
+    P14 + geom_col()
+ggplot(data = PPR1, aes(x = amendment1, y = pupae1)) + geom_point()
+
+qqnorm(PPR1$pupae1, pch = 1, frame = FALSE)
+qqline(PPR1$pupae1, col = "steelblue", lwd = 2)
+
+
+P15 <- ggplot(data = PPR2, aes(x = amendment2, y = pupae2))
+    P15 + geom_boxplot()
+    P15 + geom_col()
+ggplot(data = PPR2, aes(x = amendment2, y = pupae2)) + geom_point()
+
+qqnorm(PPR2$pupae2, pch = 1, frame = FALSE)
+qqline(PPR2$pupae2, col = "steelblue", lwd = 2)
+
+
+P16 <- ggplot(data = PLD1, aes(x = amendment1, y = score1))
+    P16 + geom_boxplot()
+    P16 + geom_col()
+ggplot(data = PLD1, aes(x = amendment1, y = score1)) + geom_point()
+
+qqnorm(PLD1$score1, pch = 1, frame = FALSE)
+qqline(PLD1$score1, col = "steelblue", lwd = 2)
+
+
+P17 <- ggplot(data = PLD2, aes(x = amendment2, y = score2))
+    P17 + geom_boxplot()
+    P17 + geom_col()
+ggplot(data = PLD2, aes(x = amendment2, y = score2)) + geom_point()
+
+qqnorm(PLD2$score2, pch = 1, frame = FALSE)
+qqline(PLD2$score2, col = "steelblue", lwd = 2)
+
+```
+
+# Test for homogeneity of variance - *Delia radicum*
+
+**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
+
+**If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances.**
+
+```{r}
+
+leveneTest(tot_larv_pupa1 ~ amendment1, data = DPR1)
+fligner.test(tot_larv_pupa1 ~ amendment1, data = DPR1)
+bartlett.test(tot_larv_pupa1 ~ amendment1, data = DPR1) 
+
+leveneTest(tot_larv_pupa2 ~ amendment2, data = DPR2)
+fligner.test(tot_larv_pupa2 ~ amendment2, data = DPR2)
+bartlett.test(tot_larv_pupa2~ amendment2, data = DPR2)
+
+leveneTest(pupalweight1 ~ amendment1, data = DPW1)
+fligner.test(pupalweight1 ~ amendment1, data = DPW1)
+bartlett.test(pupalweight1 ~ amendment1, data = DPW1) 
+
+leveneTest(pupalweight2 ~ amendment2, data = DPW2)
+fligner.test(pupalweight2 ~ amendment2, data = DPW2)
+bartlett.test(pupalweight2~ amendment2, data = DPW2)
+
+leveneTest(percent_per_day1 ~ amendment1, data = DFE1)
+fligner.test(percent_per_day1 ~ amendment1, data = DFE1)
+bartlett.test(percent_per_day1 ~ amendment1, data = DFE1) 
+
+leveneTest(percent_per_day2 ~ amendment2, data = DFE2)
+fligner.test(percent_per_day2 ~ amendment2, data = DFE2)
+bartlett.test(percent_per_day2~ amendment2, data = DFE2)
+
+```
+
+# Test for homogeneity of variance - *Plutella xylostella*
+
+**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
+
+**If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances.**
+
+```{r}
+
+leveneTest(pupae1 ~ amendment1, data = PPR1)
+fligner.test(pupae1 ~ amendment1, data = PPR1)
+bartlett.test(pupae1 ~ amendment1, data = PPR1) 
+
+leveneTest(pupae2 ~ amendment2, data = PPR2)
+fligner.test(pupae2 ~ amendment2, data = PPR2)
+bartlett.test(pupae2~ amendment2, data = PPR2)
+
+leveneTest(score1 ~ amendment1, data = PLD1)
+fligner.test(score1 ~ amendment1, data = PLD1)
+bartlett.test(score1 ~ amendment1, data = PLD1) 
+
+leveneTest(score2 ~ amendment2, data = PLD2)
+fligner.test(score2 ~ amendment2, data = PLD2)
+bartlett.test(score2~ amendment2, data = PLD2)
+
+```
+
+# Test for Normality of variances - *Delia radicum*
+
+**If the sample size is large enough (n > 30), we can ignore the distribution of the data and use parametric tests.** **The central limit theorem tells us that no matter what distribution things have, the sampling distribution tends to be normal if the sample is large enough (n > 30)**
+
+Shapiro-Wilk test **(recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505).** 
+**It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores.**
+
+**If the p-value is less than or equal to the significance level, the decision is to reject the null hypothesis and conclude that your data do not follow a normal distribution.**
+
+```{r}
+
+shapiro.test(DPR1$tot_larv_pupa1)
+shapiro.test(DPR2$tot_larv_pupa2)
+
+shapiro.test(DPW1$pupalweight1)
+shapiro.test(DPW2$pupalweight2)
+
+shapiro.test(DFE1$percent_per_day1)
+shapiro.test(DFE2$percent_per_day2)
+
+```
+
+# Test for Normality of variances - *Plutella xylostella*
+
+```{r}
+
+shapiro.test(PPR1$pupae1)
+shapiro.test(PPR2$pupae2)
+
+shapiro.test(PDL1$score1)
+shapiro.test(PDL2$score2)
+
+
+```
+
+#  Model seection - *Delia radicum*
+
+```{r}
+# Overdispersion function
+Overdisp_fun <- function (model) {
+	rdf <- df.residual(model)
+	rp <- residuals(model, type = "pearson")
+	Pearson.chisq <- sum(rp * rp)
+	prat <- Pearson.chisq / rdf
+	pval <- pchisq(Pearson.chisq, df = rdf, lower.tail = F)
+	c(chisq = Pearson.chisq, ratio = prat, rdf = rdf, p = pval)
+	}
+
+lm.DPR1 <- lm(tot_larv_pupa1 ~ amendment1, data = DPR1)
+glmp.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, family = poisson, data = DPR1)
+gamma.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, family = Gamma(link = "log"), data = DPR1)
+glm.DPR1 <- glm(tot_larv_pupa1 ~ amendment1, data = DPR1)
+AIC(lm.DPR1, glmp.DPR1, gamma.DPR1, glm.DPR1)
+
+# Check overdispersion. The ratio should be around 1
+Overdisp_fun(glmp.PPR1)
+
+lm.DPR2 <- lm(tot_larv_pupa2 ~ amendment2, data = DPR2)
+glmp.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, family = poisson, data = DPR2)
+gamma.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, family = Gamma(link = "log"), data = DPR2)
+glm.DPR2 <- glm(tot_larv_pupa2 ~ amendment2, data = DPR2)
+AIC(lm.DPR2, gamma.DPR2, glm.DPR2)
+
+Overdisp_fun(glmp.PPR1)
+
+lm.DPW1 <- lm(pupalweight1 ~ amendment1, data = DPW1)
+gamma.DPW1 <- glm(pupalweight1 ~ amendment1, family = Gamma (link = "log"), data = DPW1)
+glm.DPW1 <- glm(pupalweight1 ~ amendment1, data = DPW1)
+AIC(lm.DPW1, gamma.DPW1, glm.DPW1)
+
+lm.DPW2 <- lm(pupalweight2 ~ amendment2, data = DPW2)
+gamma.DPW2 <- glm(pupalweight2 ~ amendment2, family = Gamma (link = "log"), data = DPW2)
+glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2)
+AIC(lm.DPW2, gamma.DPW2, glm.DPW2)
+
+lm.DFE1 <- lm(percent_per_day1 ~ amendment1, data = DFE1)
+gamma.DFE1 <- glm(percent_per_day1 ~ amendment1, family = Gamma(link = "log"), data = DFE1)
+glm.DFE1 <- glm(percent_per_day1 ~ amendment1, data = DFE1)
+AIC(lm.DFE1, gamma.DFE1, glm.DFE1)
+
+lm.DFE2 <- lm(percent_per_day2 ~ amendment2, data = DFE2 )
+gamma.DFE2 <- glm(percent_per_day2 ~ amendment2, family = Gamma(link = "log"), data = DFE2)
+glm.DFE2 <- glm(percent_per_day2 ~ amendment2, data = DFE2)
+AIC(lm.DFE2, gamma.DFE2, glm.DFE2)
+
+```
+
+#  Model seection - *Plutella xylostella*
+
+```{r}
+
+# Overdispersion function
+Overdisp_fun <- function (model) {
+	rdf <- df.residual(model)
+	rp <- residuals(model, type = "pearson")
+	Pearson.chisq <- sum(rp * rp)
+	prat <- Pearson.chisq / rdf
+	pval <- pchisq(Pearson.chisq, df = rdf, lower.tail = F)
+	c(chisq = Pearson.chisq, ratio = prat, rdf = rdf, p = pval)
+	}
+
+lm.PPR1 <- lm(pupae1 ~ amendment1, data = PPR1)
+glmp.PPR1 <- glm(pupae1 ~ amendment1, family = poisson, data = PPR1)
+gamma.PPR1 <- glm(pupae1 ~ amendment1, family = Gamma(link = "log"), data = PPR1)
+glm.PPR1 <- glm(pupae1 ~ amendment1, data = PPR1)
+AIC(lm.PPR1, glmp.PPR1, gamma.PPR1, glm.PPR1)
+
+# Check overdispersion. The ratio should be around 1
+Overdisp_fun(glmp.PPR1)
+
+
+lm.PPR2 <- lm(pupae2 ~ amendment2, data = PPR2)
+glmp.PPR2 <- glm(pupae2 ~ amendment2, family = poisson, data = PPR2)
+gamma.PPR2 <- glm(pupae2 ~ amendment2, family = Gamma(link = "log"), data = PPR2)
+glm.PPR2 <- glm(pupae2 ~ amendment2, data = PPR2)
+AIC(lm.PPR2, glmp.PPR2, gamma.PPR2, glm.PPR2)
+
+Overdisp_fun(glmp.PPR2)
+
+lm.PLD1 <- lm(score1 ~ amendment1, data = PLD1)
+gamma.PLD1 <- glm(score1 ~ amendment1, family = Gamma(link = "log"), data = PLD1)
+glm.PLD1 <- glm(score1 ~ amendment1, data = PLD1)
+AIC(lm.PLD1, gamma.PLD1, glm.PLD1)
+
+lm.PLD2 <- lm(score2 ~ amendment2, data = PLD2)
+gamma.PLD2 <- glm(score2 ~ amendment2, family = Gamma(link = "log"), data = PLD2)
+glm.PLD2 <- glm(score2 ~ amendment2, data = PLD2)
+AIC(lm.PLD2, gamma.PLD2, glm.PLD2)
+
+```
+
+# Data analysis - Delia radicum
+
+**Fit a mixed model: amendment effect is main/fixed and independent.**
+
+```{r}
+
+
+
+
+```
+
+# Data analysis - Plutella xylostella
+
+**Fit a mixed model: amendment effect is main/fixed and independent.**
+
+
+```{r}
+
+
+
+
+```
+
+# Posthoc test - Delia radicum
+
+**Tukey test using the emmeans (estimated marginal means) package**
+
+
+```{r}
+
+HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
+
+
+
+```
+
+
+# Plots for Delia radicum
+
+```{r, echo=TRUE, eval=TRUE}
+
+P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
+  geom_boxplot(aes(fill = amendment1), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P4 + ylim(0, 106)
+
+ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
+
+
+
+```
+
+
+# Plots for Plutella xylostella
+
+```{r, echo=TRUE, eval=TRUE}
+
+P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
+  geom_boxplot(aes(fill = amendment1), 
+  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
+  panel.grid.minor = element_blank())+ 
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P4 + ylim(0, 106)
+
+ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)

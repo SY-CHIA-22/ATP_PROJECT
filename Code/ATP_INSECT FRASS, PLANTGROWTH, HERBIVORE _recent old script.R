@@ -1759,6 +1759,7 @@ ggsave("boxplot_pupwt.jpeg", width = 4, height = 3, dpi = 1000)
 
 #### Plutella: Larval development - Number of Plutella xylostella pupae
 
+
 DBM<-read.table("DBM_pupaeRecovered_trials_A_B.txt",header=TRUE)
 DBM1<-read.table("DBM_pupaeRecovered_trials_A_B_days_6_10_added_zeros.txt",header=TRUE)
 
@@ -1819,7 +1820,10 @@ emmeans(ref_grid(p1a, regrid = "response"), pairwise ~ Treatt|Time)
 emmeans(ref_grid(p1a, regrid = "response"), pairwise ~ Time|Trial|Treatt)
 emmeans(ref_grid(p1a, regrid = "response"), pairwise ~ Trial|Treatt|Time)
 
+
+
 #Plot number of DMB recovered over time
+
 library(dplyr) 
 library(ggplot2)
 library(ggpubr)
@@ -1847,6 +1851,7 @@ P <- ggplot(DBM.summary, aes(Time, Pupae)) +
 P + labs(fill = "Soil amendment") # Did not work yet
 
 ggsave("ggplot_P.jpeg", width = 4, height = 3, dpi = 1000)
+
 
 
 #### Plant damage by larvae of P. xylostella
@@ -1886,6 +1891,7 @@ ds + ylim(2,8)+ theme(legend.position="bottom")
 
 #Save  the final figure
 ggsave("boxplot_ds.jpeg", width = 4, height = 3, dpi = 1000)
+
 
 
 #### Flower development time for B. rapa plants in the greenhouse

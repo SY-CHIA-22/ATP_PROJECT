@@ -1,4 +1,4 @@
-amendment1	trial	plant_id1	larvae1	pupae1	tot_larv_pupa1
+amendment1	trial1	plant_id1	larvae1	pupae1	tot_larv_pupa1
 BSFF	1	1	1	7	8
 BSFF	1	2	1	2	3
 BSFF	1	3	1	3	4

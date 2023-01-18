@@ -111,12 +111,12 @@ summary(LN2)
 
 ```
 
-# Visualize data
+# Visualize data - Leaf Area (LA)
 
-## Using boxplots, Q-Q Plots, bar graphs or scatter plots
-   'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles against the actual       quantiles of our variable'.
+Using boxplots, Q-Q Plots, bar graphs
+'QQ Plot stands for Quantile vs Quantile Plot, which is exactly what it does: plotting theoretical quantiles against the actual quantiles of our variable'.
    
-### Leaf Area (LA): *sample sizes are very large (>30), therefore I ignore the test for normality*
+**sample sizes are very large (>30), therefore I ignore the test for normality**
 
 ```{r, echo = TRUE, eval = TRUE}
 
@@ -139,7 +139,9 @@ qqline(LA2$leafarea2, col = "steelblue", lwd = 2)
 
 ```
 
-### Number of leaves (LN): *sample sizes are very large (>30), therefore I ignore the test for normality*
+# Visualize data -Number of leaves (LN):
+
+**sample sizes are very large (>30), therefore I ignore the test for normality**
 
 ```{r, echo = TRUE, eval = TRUE}
 
@@ -162,9 +164,11 @@ qqline(LN2$no_leaves2, col = "steelblue", lwd = 2)
 
 ```
 
-# Test for homogeneity of variance
-**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met). If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances**.
-## Leaf Area (LA)
+# Test for homogeneity of variance - Leaf Area (LA)
+
+**If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
+
+**If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances.**
 
 ```{r, echo = FALSE, eval = FALSE}
 
@@ -191,15 +195,17 @@ bartlett.test(no_leaves2 ~ amendment2, data = LN2)
 
 ```
 
-# Test for Normality of variances: 
+# Test for Normality of variances - Leaf Area, Number of leaves
 
-If the sample size is large enough (n > 30), we can ignore the distribution of the data and use parametric tests. The **central limit theorem** tells us that no matter what distribution things have, 
+**If the sample size is large enough (n > 30), we can ignore the distribution of the data and use parametric tests. The central limit theorem tells us that no matter what distribution things have, 
 the sampling distribution tends to be normal if the sample is large enough (n > 30).
 
-## **Shapiro-Wilk test** (recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505). It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores. **If the p-value is less than or equal to the significance level, the decision is to reject the null hypothesis and conclude that your data do not follow a normal distribution**.
-## Leaf Area, Leaf number
+*Shapiro-Wilk test* (recommended by Ghasemi & Zahediasl, 2002, doi: 10.5812/ijem.3505). It provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores.
+
+**If the p-value is less than or equal to the significance level, the decision is to reject the null hypothesis and conclude that your data do not follow a normal distribution**.
 
 ```{r}
+
 shapiro.test(LA1$leafarea1)
 shapiro.test(LA2$leafarea2)
 
@@ -210,7 +216,7 @@ shapiro.test(LN2$no_leaves2)
 
 #  Model seection
 
-## *Gamma distribution is best based on the AIC values*
+*Gamma distribution is best based on the AIC values*
 
 ```{r}
 
@@ -237,14 +243,13 @@ AIC(lmer.LN2, glmmTMB.LN2, gamma.LN2)
 
 ```
 
-# Data analysis
+# Data analysis - Leaf Area  and Number of leaves
 
-## Leaf Area  and Number of leaves data
-### Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.
+**Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.**
 
-### Selected model *(Gamma distribution)*
+**Selected model *(Gamma distribution)**
 
-#### *effect of soil amendment was significant on leaf area and number of leaves*
+**effect of soil amendment was significant on leaf area and number of leaves**
 
 ```{r}
 
@@ -268,7 +273,8 @@ Anova(gamma.LN2)
 ```
 
 # Posthoc test
-## *Tukey test using the emmeans (estimated marginal means) package*
+
+**Tukey test using the emmeans (estimated marginal means) package**
 
 ```{r}
 HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
@@ -284,7 +290,8 @@ HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendme
 emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2) 
 
 ```
-# Plots for leafarea (cm^2) , Number of leaves
+
+# Plots for leafarea, Number of leaves
 
 ```{r, echo=TRUE, eval=TRUE}
 
@@ -336,6 +343,7 @@ P7 + ylim(0, 14)
 ggsave("boxplot_P7.jpeg", width = 4, height = 3, dpi = 1000)
 
 ```
+
 # Rearrange rows
 
 ```{r}
