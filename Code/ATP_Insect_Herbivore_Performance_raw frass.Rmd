@@ -102,6 +102,8 @@ DFE2$pupae2 <- as.numeric(DFE2$pupae2)
 DFE2$flies2 <- as.numeric(DFE2$flies2)
 DFE2$percent_per_day2 <- as.numeric(DFE2$percent_per_day2)
 
+delia.list <- list(DPR1, DPR2, DPW1, DPW2, DFE1, DFE2)
+
 ```
 
 # Load and prepare the data: *Plutella xylostella*
