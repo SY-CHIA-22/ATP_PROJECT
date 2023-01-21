@@ -40,7 +40,7 @@ library(MASS)
 # Set working directory
 
 ```{r}
-setwd("C:/ATP_PROJECT/Data")
+
 ```
 
 # Load and prepare the data: *Delia radicum*
@@ -151,7 +151,7 @@ PLD2<-read.table("plutella_leaf_damage_score_trial_2.txt",header=TRUE)
 
 # Save data in appropriate format
 
-### *Delia Plutella xylostella*
+### *Plutella xylostella*
 
  Set the variable characteristics correctly
 
@@ -520,9 +520,12 @@ percent.em1 <- DFE1$flies1/DFE1$pupae1
 DFE1 <- cbind(percent.em1, DFE1)
 DFE1
 
+df_DFE1 = subset(DFE1, select = -c(percent.em1)) #drop duplicated column 
+
 percent.em2 <- DFE2$flies2/DFE2$pupae2
 DFE2 <- cbind(percent.em2, DFE2)
 DFE2
+df_DFE2 = subset(DFE2, select = -c(percent.em2)) #drop duplicated column 
 
 #fit models
 lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1) # logistic regression model using binary function
@@ -530,8 +533,8 @@ gamma.DFE1 <- glm(percent.em1 ~ amendment1, family = Gamma(link = "log"), data =
 glm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1)
 AIC(lglm.DFE1, gamma.DFE1, glm.DFE1)
 
-lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2)
-gamma.DFE2 <- glm(percent.em2 ~ amendment2, family = Gamma(link = "log"), data = DFE2) # gamma.DFE2
+lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2) # used here for consistency with lglm.DFE1
+gamma.DFE2 <- glm(percent.em2 ~ amendment2, family = Gamma(link = "log"), data = DFE2) # gamma.DFE2, small AIC but no better result
 glm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2)
 AIC(lglm.DFE2, gamma.DFE2, glm.DFE2)
 
@@ -555,6 +558,7 @@ AIC(pois.DFE2, qpois.DFE2, glm.DFE2, nbin.DFE2)
 # Data analysis - Delia radicum
 
 **Fit a mixed model: amendment effect is main/fixed and independent.**
+**DPR1, DPR2, DPW1, DFE1 show significant differences** *DPW2 is only marginally significant (p=0.077)*
 
 ```{r}
 
@@ -572,8 +576,6 @@ Anova(glm.DPW2)
 
 lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1)
 Anova(lglm.DFE1)
-gamma.DFE1 <- glm(percent.em1 ~ amendment1, family = Gamma(link = "log"), data = DFE1)
-Anova(gamma.DFE1)
 
 lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2)
 Anova(lglm.DFE2)
@@ -591,26 +593,21 @@ Anova(pois.DFE2)
 **lapply example: run a series of different functions on each slice of a list, for example using the output of one function as input to another. don't forget to define what is the object you want to return from the function**
 
 ```{r}
-
-analysis_l_1<-lapply(delia.list[1], function(x){
+# since objects 1 and 2 use the same model, I use lapply to run both data sets at once
+analysis_l<-lapply(delia.list[1:2], function(x){
 glm_out <- glm(survival ~ amendment, data = x, family = poisson)
 glm_out_anova<-Anova(glm_out) # defining output object
 return(glm_out_anova)
 })
-analysis_l_1
-
-analysis_l_2 <-lapply(delia.list[2], function(x){
-glm_output <- glm(survival ~ amendment, data = x, family = poisson)
-glm_output_anova<-Anova(glm_output)
-return(glm_output_anova)
-})
-analysis_l_2
+analysis_l # "l" indicates list
 
 ```
 
 # Posthoc test - Delia radicum
 
 **Tukey test using the emmeans (estimated marginal means) package**
+
+*DPR1, DPR2, DPW1, DFE1 (% and time)*
 
 ```{r}
 
@@ -633,12 +630,12 @@ emmeans(ref_grid(lglm.DFE1, regrid = "response"), pairwise ~ amendment1)
 
 ```{r, echo=TRUE, eval=TRUE}
 
-# Number of pupae retrieved (pupal survival)
+# Number of larvae + pupae retrieved (% survival)
 P18 <- ggplot(DPR1, aes(amendment1, survival))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "% Survival (larvae + pupae)")+
+  labs(x = "Treatment", y = "Percent survival of Delia radicum larvae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P18 + ylim (0, 100)
 
@@ -649,7 +646,7 @@ P19 <- ggplot(DPR2, aes(amendment2, survival))+
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Delia radicum (larvae + pupae) recovered per pot")+
+  labs(x = "Treatment", y = "Percent survival of Delia radicum larvae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P19 + ylim (0, 100)
 
@@ -680,49 +677,48 @@ ggsave("boxplot_P21.jpeg", width = 5, height = 4, dpi = 1000)
 
 
 # Fly emergence
-P22 <- ggplot(DFE1, aes(amendment1, percent_per_day1))+ 
+P22 <- ggplot(df_DFE1, aes(amendment1, percent_per_day1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Percent emergence of Delia radicum flies")+
+  labs(x = "Treatment", y = "Emergence of Delia radicum flies (%)")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P22 + ylim (0, 80)
 
 ggsave("boxplot_P22.jpeg", width = 5, height = 4, dpi = 1000)
 
 
-P23 <- ggplot(DFE2, aes(amendment2, percent_per_day2))+ 
+P23 <- ggplot(df_DFE2, aes(amendment2, percent_per_day2))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Percent emergence of Delia radicum flies")+
+  labs(x = "Treatment", y = "Emergence of Delia radicum flies (%)")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P23 + ylim (0, 40)
 
 ggsave("boxplot_P23.jpeg", width = 5, height = 4, dpi = 1000)
 
 # Time to emergence
-P24 <- ggplot(DFE1, aes(amendment1, days1))+ 
+P24 <- ggplot(df_DFE1, aes(amendment1, days1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Time (days) to emergence of D. radicum flies")+
+  labs(x = "Treatment", y = "Time (days) to emergence of Delia radicum flies")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P24 + ylim (0, 15)
 
 ggsave("boxplot_P24.jpeg", width = 5, height = 4, dpi = 1000)
 
 
-P25 <- ggplot(DFE2, aes(amendment2, days2))+ 
+P25 <- ggplot(df_DFE2, aes(amendment2, days2))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Time (days) to emergence of D. radicum flies")+
+  labs(x = "Treatment", y = "Time (days) to emergence of Delia radicum flies")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P25 + ylim (0, 15)
 
 ggsave("boxplot_P25.jpeg", width = 5, height = 4, dpi = 1000)
-
 
 
 
@@ -783,17 +779,19 @@ Overdisp_fun <- function (model) {
 
 
 qpois.PPR1 <- glm(survival ~ amendment1, family = quasipoisson, data = PPR1) # overdispersion
+pois.PPR1 <- glm(survival ~ amendment1, family = poisson, data = PPR1)
 glm.PPR1 <- glm(survival ~ amendment1, data = PPR1)
 nbin.PPR1 <- glm.nb(survival ~ amendment1, data = PPR1)
-AIC(qpois.PPR1, glm.PPR1, nbin.PPR1)
+AIC(qpois.PPR1, pois.PPR1, glm.PPR1, nbin.PPR1)
 
 # Check overdispersion. The ratio should be around 1
 Overdisp_fun(qpois.PPR1)
 
 qpois.PPR2 <- glm(survival ~ amendment2, family = quasipoisson, data = PPR2) #overdispersion
+pois.PPR2 <- glm(survival ~ amendment2, family = poisson, data = PPR2)
 glm.PPR2 <- glm(survival ~ amendment2, data = PPR2)
 nbin.PPR2 <- glm.nb(survival ~ amendment2, data = PPR2)
-AIC(qpois.PPR2, glm.PPR2, nbin.PPR2)
+AIC(qpois.PPR2, pois.PPR2, glm.PPR2, nbin.PPR2)
 
 Overdisp_fun(qpois.PPR2)
 
@@ -813,19 +811,37 @@ AIC(gamma.PLD2, glm.PLD2)
 
 **Fit a mixed model: amendment effect is main/fixed and independent.**
 
+*PLD1 is significan. when poisson odel is used*
+
 ```{r}
 
+pois.PPR1 <- glm(survival ~ amendment1, family = poisson, data = PPR1)
+Anova(pois.PPR1)
+
+pois.PPR2 <- glm(survival ~ amendment2, family = poisson, data = PPR2)
+Anova(pois.PPR2)
+
+glm.PLD1 <- glm(score1 ~ amendment1, data = PLD1)
+Anova(glm.PLD1)
+
+glm.PLD2 <- glm(score2 ~ amendment2, data = PLD2)
+Anova(glm.PLD2)
+
+
+#list format
 analysis_l_p<-lapply(plutella.list[1:2], function(xp){
-nbin.output <- glm.nb(survival ~ amendment, data = xp) # xp can be anything
-nbin.output_anova<-Anova(nbin.output)
-return(nbin.output_anova)
+pois.output <- glm(survival ~ amendment, family = poisson, data = xp) # xp can be anything
+pois.output_anova<-Anova(pois.output)
+return(pois.output_anova)
 })
+analysis_l_p
 
 analysis_l_d<-lapply(plutella.list[3:4], function(xd){ # xd can be anything
 glm.output <- glm(score ~ amendment, data = xd)
 glm.output_anova<-Anova(glm.output)
 return(glm.output_anova)
 })
+analysis_l_d
 
 
 ```
@@ -834,23 +850,63 @@ return(glm.output_anova)
 
 ```{r}
 
-HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
-emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
+HSD_test <- emmeans(ref_grid(pois.PPR1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(pois.PPR1, regrid = "response"), pairwise ~ amendment1)
 
+HSD_test <- emmeans(ref_grid(pois.PPR2, regrid = "response"), pairwise ~ amendment2)
+emmeans(ref_grid(pois.PPR2, regrid = "response"), pairwise ~ amendment2)
 
 ```
 
 # Plots for Plutella xylostella
 
-```{r, echo=TRUE, eval=TRUE}
+```{r}
 
-P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
-  geom_boxplot(aes(fill = amendment1), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
-  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
-  panel.grid.minor = element_blank())+ 
+P26 <- ggplot(PPR1, aes(amendment1, survival))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Survival of Plutella xylostella larvae (%)")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
-P4 + ylim(0, 106)
+P26 + ylim (0, 100)
 
-ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
+ggsave("boxplot_P26.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P27<- ggplot(PPR2, aes(amendment2, survival))+ 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Survival of Plutella xylostella larvae (%)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P27 + ylim (0, 80)
+
+ggsave("boxplot_P27.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+# leaf damage scores
+P28 <- ggplot(PLD1, aes(amendment1, score1))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf feeding damage score (1-7)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P28 + ylim (0, 7)
+
+ggsave("boxplot_P28.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P29 <- ggplot(PLD2, aes(amendment2, score2))+ 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf feeding damage score (1-7)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P29 + ylim (0, 7)
+
+ggsave("boxplot_P29.jpeg", width = 5, height = 4, dpi = 1000)
+
+```
+
+
+
