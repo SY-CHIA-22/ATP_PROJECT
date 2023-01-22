@@ -43,18 +43,14 @@ setwd("C:/ATP_PROJECT/Data")
 
 # Load and prepare the data
 
-## Read in LEAF AREA data - trial 1
-## Read in LEAF AREA data - trial 2
-
-## Read in LEAF NUMBER data - trial 1
-## Read in LEAF NUMBER data - trial 2
 ```{r}
 
 LA1<-read.table("Leafarea_trial_1.txt",header=TRUE)
 LA2<-read.table("Leafarea_trial_2.txt",header=TRUE)
 LN1<-read.table("Number_of_leaves_trial_1.txt",header=TRUE)
 LN2<-read.table("Number_of_leaves_trial_2.txt",header=TRUE)
-
+FT1<-read.table("flowering_time_trial_1.txt",header=TRUE)
+FT2<-read.table("flowering_time_trial_2.txt",header=TRUE)
 ```
 
 # Save data in appropriate format: 
@@ -91,6 +87,16 @@ LN2$trial2 <- as.factor(LN2$trial2)
 LN2$plant_id2 <- as.factor(LN2$plant_id2)
 LN2$no_leaves2 <- as.numeric(LN2$no_leaves2)
 
+FT1$amendment1 <- as.factor(FT1$amendment1)
+FT1$trial1 <- as.factor(FT1$trial1) 
+FT1$plant_id1 <- as.factor(FT1$plant_id1)
+FT1$days_1 <- as.numeric(FT1$days_1)
+
+FT2$amendment2 <- as.factor(FT2$amendment2)
+FT2$trial2 <- as.factor(FT2$trial2) 
+FT2$plant_id2 <- as.factor(FT2$plant_id2)
+FT2$days_2 <- as.numeric(FT2$days_2)
+
 ```
 
 # View data structure and summary stats
@@ -108,6 +114,12 @@ summary(LN1)
 
 str(LN2)
 summary(LN2)
+
+str(FT1)
+summary(FT1)
+
+str(FT2)
+summary(FT2)
 
 ```
 
@@ -164,13 +176,29 @@ qqline(LN2$no_leaves2, col = "steelblue", lwd = 2)
 
 ```
 
+# Visualize data -Flowering time (FT):
+
+```{r}
+P3a <- ggplot(data = FT1, aes(x = amendment1, y = days_1))
+    P3a + geom_boxplot()
+    P3a + geom_col()
+ggplot(data = FT1, aes(x = amendment1, y = days_1)) + geom_point()
+
+
+P3b <- ggplot(data = FT2, aes(x = amendment2, y = days_2))
+    P3b + geom_boxplot()
+    P3b + geom_col()
+ggplot(data = FT2, aes(x = amendment2, y = days_2)) + geom_point()
+
+```
+
 # Test for homogeneity of variance - Leaf Area (LA)
 
 **If the p-value for the 'Levene test' is greater than . 05, then the variances are not significantly different from each other (i.e., the homogeneity assumption of the variance is met).**
 
 **If the p-value for the Levene's test is less than . 05, then there is a Significant difference between the variances.**
 
-```{r, echo = FALSE, eval = FALSE}
+```{r}
 
 leveneTest(leafarea1 ~ amendment1, data = LA1)
 fligner.test(leafarea1 ~ amendment1, data = LA1)
@@ -241,9 +269,20 @@ glmmTMB.LN2 <- glmmTMB(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), data
 gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
 AIC(lmer.LN2, glmmTMB.LN2, gamma.LN2)
 
+
+pois.FT1 <- glm(days_1 ~ amendment1, data = FT1, family = poisson)
+glm.FT1 <- glm(days_1 ~ amendment1, data = FT1)
+gamma.FT1 <- glm(days_1 ~ amendment1, family = Gamma(link = "log"), data = FT1)
+AIC(pois.FT1, glm.FT1, gamma.FT1)
+
+pois.FT2 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
+glm.FT2 <- glm(days_2 ~ amendment2, data = FT2)
+gamma.FT2 <- glm(days_2 ~ amendment2, family = Gamma(link = "log"), data = FT2)
+AIC(pois.FT2, glm.FT2, gamma.FT2)
+
 ```
 
-# Data analysis - Leaf Area  and Number of leaves
+# Data analysis - Leaf Area, Number of leaves, flowering time
 
 **Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.**
 
@@ -261,7 +300,6 @@ gamma.LA2 <- glmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), family = 
 summary(gamma.LA2)
 Anova(gamma.LA2)
 
-
 gamma.LN1 <- glmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"), data = LN1)
 summary(gamma.LN1)
 Anova(gamma.LN1)
@@ -269,6 +307,12 @@ Anova(gamma.LN1)
 gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
 summary(gamma.LN2)
 Anova(gamma.LN2)
+
+glm.FT1 <- glm(days_1 ~ amendment1, data = FT1)
+Anova(pois.FT1)
+
+glm.FT1 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
+Anova(pois.FT2)
 
 ```
 
@@ -289,6 +333,7 @@ emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
 HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2) 
 
+
 ```
 
 # Plots for leafarea, Number of leaves
@@ -296,55 +341,72 @@ emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 ```{r, echo=TRUE, eval=TRUE}
 
 P4 <- ggplot(LA1, aes(amendment1, leafarea1))+ 
-  geom_boxplot(aes(fill = amendment1), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
-  theme_bw() + theme(panel.grid.major = element_blank(),# removes grid background 
-  panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
-P4 + ylim(0, 106)
+  geom_boxplot(aes(fill = amendment1),show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6")) # Dark Sky Blue
+P4 + ylim(0, 115)
 
-ggsave("boxplot_P4.jpeg", width = 4, height = 3, dpi = 1000)
+ggsave("boxplot_P4.jpeg", width = 5, height = 4, dpi = 1000)
 
 
 P5 <- ggplot(LA2, aes(amendment2, leafarea2))+ 
-  geom_boxplot(aes(fill = amendment2), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Leaf area (sq cm)")+
-  theme_bw() + theme(panel.grid.major = element_blank(),
-  panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#BCD2E8", "#BCD2E8","#BCD2E8")) # Beau Blue
-P5 + ylim(0, 104)
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6")) # Dark Sky Blue
+P5 + ylim(0, 115)
 
-ggsave("boxplot_P5.jpeg", width = 4, height = 3, dpi = 1000)
+ggsave("boxplot_P5.jpeg", width = 5, height = 4, dpi = 1000)
 
 
 P6 <- ggplot(LN1, aes(amendment1, no_leaves1))+ 
-  geom_boxplot(aes(fill = amendment1), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Number of leaves")+
-  theme_bw() + theme(panel.grid.major = element_blank(),
-  panel.grid.minor = element_blank())+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Number of leaves")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
-P6 + ylim(0, 14)
+P6 + ylim(0, 15)
 
-ggsave("boxplot_P6.jpeg", width = 4, height = 3, dpi = 1000)
+ggsave("boxplot_P6.jpeg", width = 5, height = 4, dpi = 1000)
 
 
 P7 <- ggplot(LN2, aes(amendment2, no_leaves2))+ 
-  geom_boxplot(aes(fill = amendment2), 
-  notch = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
-  theme_minimal() + labs(x = "Treatment", y = "Number of leaves")+
-  theme_bw() + theme(panel.grid.major = element_blank(),
-  panel.grid.minor = element_blank())+ 
-  scale_fill_manual(values = c("#BCD2E8", "#BCD2E8","#BCD2E8"))# Beau Blue
-P7 + ylim(0, 14)
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Number of leaves")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P7 + ylim(0, 15)
 
-ggsave("boxplot_P7.jpeg", width = 4, height = 3, dpi = 1000)
+ggsave("boxplot_P7.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P7a <- ggplot(FT1, aes(amendment1, days_1))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + # repeating this line helps to make the "mean symbol appear pure white
+  labs(x = "Treatment", y = "Flowering time (days)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P7a + ylim (0, 96)
+
+ggsave("boxplot_P7a.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P7b <- ggplot(FT2, aes(amendment2, days_2))+ 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + # repeating this line helps to make the "mean symbol appear pure white
+  labs(x = "Treatment", y = "Flowering time (days)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P7b + ylim (0, 80)
+
+ggsave("boxplot_P7b.jpeg", width = 5, height = 4, dpi = 1000)
 
 ```
 
-# Rearrange rows
 
 ```{r}
 
