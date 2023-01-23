@@ -51,14 +51,21 @@ LN1<-read.table("Number_of_leaves_trial_1.txt",header=TRUE)
 LN2<-read.table("Number_of_leaves_trial_2.txt",header=TRUE)
 FT1<-read.table("flowering_time_trial_1.txt",header=TRUE)
 FT2<-read.table("flowering_time_trial_2.txt",header=TRUE)
+
+LA_N_incu<-read.table("IncubatedFrass_leafarea_leafcount.txt",header=TRUE)
+LA_N_comp<-read.table("CompostedFrass_leafarea_leafcount.txt",header=TRUE)
+FT_incu<-read.table("IncubatedFrass_floweringtime.txt",header=TRUE)
+FT_comp<-read.table("CompostedFrass_floweringtime.txt",header=TRUE)
+
+
 ```
 
 # Save data in appropriate format: 
-## Set the variable characteristics correctly for LA1, LA2, LN1, LN2
-### specify factor and numeric variables
+#### Set the variable characteristics correctly for LA1, LA2, LN1, LN2
 
 ```{r}
 
+# Raw frass
 LA1$amendment1 <- as.factor(LA1$amendment1)
 LA1$time1 <- as.factor(LA1$time1) 
 LA1$plant_id1 <- as.factor(LA1$plant_id1)
@@ -97,6 +104,30 @@ FT2$trial2 <- as.factor(FT2$trial2)
 FT2$plant_id2 <- as.factor(FT2$plant_id2)
 FT2$days_2 <- as.numeric(FT2$days_2)
 
+
+# pre-treated (incubated and composted) frass
+
+LA_N_incu$amendment<- as.factor(LA_N_incu$amendment)
+LA_N_incu$time<- as.factor(LA_N_incu$time)
+LA_N_incu$plant_id<- as.factor(LA_N_incu$plant_id)
+LA_N_incu$leaf_count<- as.numeric(LA_N_incu$leaf_count)
+LA_N_incu$leafarea<- as.numeric(LA_N_incu$leafarea)
+
+LA_N_comp$amendment<- as.factor(LA_N_comp$amendment)
+LA_N_comp$time <-as.factor(LA_N_comp$time)
+LA_N_comp$plant_id<- as.factor(LA_N_comp$plant_id)
+LA_N_comp$leaf_count<- as.numeric(LA_N_comp$leaf_count)
+LA_N_comp$leafarea<- as.numeric(LA_N_comp$leafarea)
+
+FT_incu_comp$amendment<- as.factor(FT_incu_comp$amendment)
+FT_incu_comp$Incubated<- as.numeric(FT_incu_comp$Incubated)
+FT_incu_comp$Composted<- as.numeric(FT_incu_comp$Composted)
+
+FT_incu$amendment<- as.factor(FT_incu$amendment)
+FT_incu$days_incu<- as.numeric(FT_incu$days_incu)
+
+FT_comp$amendment<- as.factor(FT_comp$amendment)
+FT_comp$days_comp<- as.numeric(FT_comp$days_comp)
 ```
 
 # View data structure and summary stats
@@ -121,6 +152,15 @@ summary(FT1)
 str(FT2)
 summary(FT2)
 
+str(LA_N_incu)
+summary(LA_N_incu)
+
+str(LA_N_comp)
+summary(LA_N_comp)
+
+str(FT_incu_comp)
+summary(FT_incu_comp)
+
 ```
 
 # Visualize data - Leaf Area (LA)
@@ -132,6 +172,7 @@ Using boxplots, Q-Q Plots, bar graphs
 
 ```{r, echo = TRUE, eval = TRUE}
 
+#leaf area and leaf count, raw frass
 P <- ggplot(data = LA1, aes(x = amendment1, y = leafarea1))
     P + geom_boxplot()
     P + geom_col()
@@ -149,14 +190,16 @@ ggplot(data = LA2, aes(x = amendment2, y = leafarea2)) + geom_point()
 qqnorm(LA2$leafarea2, pch = 1, frame = FALSE)
 qqline(LA2$leafarea2, col = "steelblue", lwd = 2)
 
+
 ```
 
 # Visualize data -Number of leaves (LN):
 
 **sample sizes are very large (>30), therefore I ignore the test for normality**
 
-```{r, echo = TRUE, eval = TRUE}
+```{r}
 
+#leaf area and leaf count, raw frass
 P2 <- ggplot(data = LN1, aes(x = amendment1, y = no_leaves1))
     P2 + geom_boxplot()
     P2 + geom_col()
@@ -167,18 +210,43 @@ P3 <- ggplot(data = LN2, aes(x = amendment2, y = no_leaves2))
     P3 + geom_boxplot()
     P3 + geom_col()
 
-    
 ggplot(data = LN1, aes(x = amendment1, y = no_leaves1)) + geom_point()
 ggplot(data = LN2, aes(x = amendment2, y = no_leaves2)) + geom_point()
 
 qqnorm(LN1$no_leaves1, pch = 1, frame = FALSE)
 qqline(LN2$no_leaves2, col = "steelblue", lwd = 2)
 
+
+#leaf area and leaf count, incubated frass
+Pa3 <- ggplot(data = LA_N_incu, aes(x = amendment, y = leafarea))
+    Pa3 + geom_boxplot()
+    Pa3 + geom_col()
+ggplot(data = LA_N_incu, aes(x = amendment, y = leafarea)) + geom_point()
+
+Pb3 <- ggplot(data = LA_N_incu, aes(x = amendment, y = leaf_count))
+    Pb3 + geom_boxplot()
+    Pb3 + geom_col()
+ggplot(data = LA_N_incu, aes(x = amendment, y = leaf_count)) + geom_point()
+
+
+#leaf area and leaf count, composted frass
+Pc3 <- ggplot(data = LA_N_comp, aes(x = amendment, y = leafarea))
+    Pc3 + geom_boxplot()
+    Pc3 + geom_col()
+ggplot(data = LA_N_comp, aes(x = amendment, y = leafarea)) + geom_point()
+
+Pd3 <- ggplot(data = LA_N_comp, aes(x = amendment, y = leaf_count))
+    Pd3 + geom_boxplot()
+    Pd3 + geom_col()
+ggplot(data = LA_N_comp, aes(x = amendment, y = leaf_count)) + geom_point()
+
 ```
 
 # Visualize data -Flowering time (FT):
 
 ```{r}
+
+# FLOWERING  time, raw frass
 P3a <- ggplot(data = FT1, aes(x = amendment1, y = days_1))
     P3a + geom_boxplot()
     P3a + geom_col()
@@ -189,6 +257,19 @@ P3b <- ggplot(data = FT2, aes(x = amendment2, y = days_2))
     P3b + geom_boxplot()
     P3b + geom_col()
 ggplot(data = FT2, aes(x = amendment2, y = days_2)) + geom_point()
+
+
+#flowering time, processed frass (incubated and composted frass)
+Pd3 <- ggplot(data = FT_incu_comp, aes(x = amendment, y = Incubated))
+    Pd3 + geom_boxplot()
+    Pd3 + geom_col()
+ggplot(data = FT_incu_comp, aes(x = amendment, y = Incubated)) + geom_point()
+
+Pe3 <- ggplot(data = FT_incu_comp, aes(x = amendment, y = Composted))
+    Pe3 + geom_boxplot()
+    Pe3 + geom_col()
+ggplot(data = FT_incu_comp, aes(x = amendment, y = Composted)) + geom_point()
+
 
 ```
 
@@ -244,10 +325,8 @@ shapiro.test(LN2$no_leaves2)
 
 #  Model seection
 
-*Gamma distribution is best based on the AIC values*
-
 ```{r}
-
+#leaf area, raw frass
 lmer.LA1 <- lmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LA1)
 glmmTMB.LA1 <- glmmTMB(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LA1)
 gamma.LA1 <- glmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LA1)
@@ -258,7 +337,7 @@ glmmTMB.LA2 <- glmmTMB(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), data 
 gamma.LA2 <- glmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LA2)
 AIC(lmer.LA2, glmmTMB.LA2, gamma.LA2)
 
-
+# leaf count, raw frass
 lmer.LN1 <- lmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LN1)
 glmmTMB.LN1 <- glmmTMB(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), data = LN1)
 gamma.LN1 <- glmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LN1)
@@ -269,7 +348,29 @@ glmmTMB.LN2 <- glmmTMB(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), data
 gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
 AIC(lmer.LN2, glmmTMB.LN2, gamma.LN2)
 
+#leaf area, processed frass
+lmer.LA_N_incu <- lmer(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_incu)
+glmmTMB.LA_N_incu <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_incu)
+gamma.LA_N_incu <- glmer(leafarea ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_incu)
+AIC(lmer.LA_N_incu, glmmTMB.LA_N_incu, gamma.LA_N_incu)
 
+lmer.LA_N_comp <- lmer(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
+glmmTMB.LA_N_comp <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
+gamma.LA_N_comp  <- glmer(leafarea ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_comp)
+AIC(lmer.LA_N_comp , glmmTMB.LA_N_comp, gamma.LA_N_comp)
+
+#leaf count, processed frass
+pois.LA_N_incuL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = poisson, data = LA_N_incu)
+glmmTMB.LA_N_incuL <- glmmTMB(leaf_count ~ amendment + (1|time) + (1|plant_id), data = LA_N_incu)
+gamma.LA_N_incuL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_incu)
+AIC(pois.LA_N_incuL, glmmTMB.LA_N_incuL, gamma.LA_N_incuL)
+
+pois.LA_N_compL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = poisson, data = LA_N_comp)
+glmmTMB.LA_N_compL <- glmmTMB(leaf_count ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
+gamma.LA_N_compL <-glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_comp)
+AIC(pois.LA_N_compL, glmmTMB.LA_N_compL, gamma.LA_N_compL)
+
+# flowering time, raw frass
 pois.FT1 <- glm(days_1 ~ amendment1, data = FT1, family = poisson)
 glm.FT1 <- glm(days_1 ~ amendment1, data = FT1)
 gamma.FT1 <- glm(days_1 ~ amendment1, family = Gamma(link = "log"), data = FT1)
@@ -279,6 +380,18 @@ pois.FT2 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
 glm.FT2 <- glm(days_2 ~ amendment2, data = FT2)
 gamma.FT2 <- glm(days_2 ~ amendment2, family = Gamma(link = "log"), data = FT2)
 AIC(pois.FT2, glm.FT2, gamma.FT2)
+
+
+#flowering time, processed frass
+pois.FT_incu <- glm(days_incu ~ amendment, data = FT_incu, family = poisson)
+gamma.FT_incu <- glm(days_incu ~ amendment, family = Gamma(link = "log"), data = FT_incu)
+AIC(pois.FT_incu, gamma.FT_incu)
+
+pois.FT_comp <- glm(days_comp ~ amendment, data = FT_comp, family = poisson)
+gamma.FT_comp <- glm(days_comp ~ amendment, family = Gamma(link = "log"), data = FT_comp)
+AIC(pois.FT_comp, gamma.FT_comp)
+
+
 
 ```
 
@@ -314,6 +427,20 @@ Anova(pois.FT1)
 glm.FT1 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
 Anova(pois.FT2)
 
+#Processed frass
+glmmTMB.LA_N_incu <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_incu)
+Anova(glmmTMB.LA_N_incu)
+glmmTMB.LA_N_comp <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
+Anova(glmmTMB.LA_N_comp)
+gamma.LA_N_incuL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_incu)
+Anova(gamma.LA_N_incuL)
+glmmTMB.LA_N_compL <- glmmTMB(leaf_count ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
+Anova(glmmTMB.LA_N_compL)
+pois.FT_incu <- glm(days_incu ~ amendment, data = FT_incu, family = poisson)
+Anova(pois.FT_incu)
+pois.FT_comp <- glm(days_comp ~ amendment, data = FT_comp, family = poisson)
+Anova(pois.FT_comp)
+
 ```
 
 # Posthoc test
@@ -321,6 +448,7 @@ Anova(pois.FT2)
 **Tukey test using the emmeans (estimated marginal means) package**
 
 ```{r}
+#raw frass
 HSD_test <- emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1)
 emmeans(ref_grid(gamma.LA1, regrid = "response"), pairwise ~ amendment1) 
 
@@ -331,7 +459,18 @@ HSD_test <- emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendme
 emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
 
 HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
-emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2) 
+emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
+
+
+#processed frass
+HSD_test <- emmeans(ref_grid(glmmTMB.LA_N_incu, regrid = "response"), pairwise ~ amendment)
+emmeans(ref_grid(glmmTMB.LA_N_incu, regrid = "response"), pairwise ~ amendment)
+
+HSD_test <- emmeans(ref_grid(glmmTMB.LA_N_comp, regrid = "response"), pairwise ~ amendment)
+emmeans(ref_grid(glmmTMB.LA_N_comp, regrid = "response"), pairwise ~ amendment)
+
+HSD_test <- emmeans(ref_grid(gamma.LA_N_compL, regrid = "response"), pairwise ~ amendment)
+emmeans(ref_grid(gamma.LA_N_compL, regrid = "response"), pairwise ~ amendment) 
 
 
 ```
