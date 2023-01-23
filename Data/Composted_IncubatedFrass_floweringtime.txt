@@ -2,23 +2,23 @@ amendment	Composted	Incubated
 BSFF	54	41	
 BSFF	48	54	
 BSFF	41	45	
-BSFF	54	NA	
-BSFF	53	NA	
-BSFF	44	NA	
-BSFF	47	NA	
-BSFF	59	NA	
-BSFF	48	NA	
-BSFF	53	NA	
+BSFF	54		
+BSFF	53		
+BSFF	44		
+BSFF	47		
+BSFF	59		
+BSFF	48		
+BSFF	53		
 MWF	52	38	
 MWF	50	55	
 MWF	41	37	
 MWF	46	54	
-MWF	53	NA	
-MWF	46	NA	
-MWF	54	NA	
+MWF	53		
+MWF	46		
+MWF	54		
 NoFrass	50	44	
 NoFrass	53	35	
 NoFrass	41	58	
-NoFrass	NA	41	
-NoFrass	NA	50	
-NoFrass	NA	42	
+NoFrass		41	
+NoFrass		50	
+NoFrass		42	
