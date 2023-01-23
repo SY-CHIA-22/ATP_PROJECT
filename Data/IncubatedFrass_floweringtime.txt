@@ -1,0 +1,14 @@
+amendment	days_incu
+BSFF	41
+BSFF	54
+BSFF	45
+MWF	38
+MWF	55
+MWF	37
+MWF	54
+NoFrass	44
+NoFrass	35
+NoFrass	58
+NoFrass	41
+NoFrass	50
+NoFrass	42
