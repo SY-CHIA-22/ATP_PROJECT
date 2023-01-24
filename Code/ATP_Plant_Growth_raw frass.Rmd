@@ -176,7 +176,7 @@ Using boxplots, Q-Q Plots, bar graphs
    
 **sample sizes are very large (>30), therefore I ignore the test for normality**
 
-```{r, echo = TRUE, eval = TRUE}
+```{r}
 
 #leaf area and leaf count, raw frass
 P <- ggplot(data = LA1, aes(x = amendment1, y = leafarea1))
@@ -378,6 +378,8 @@ AIC(pois.LA_N_compL, glmmTMB.LA_N_compL, gamma.LA_N_compL)
 
 # flowering time, raw frass
 pois.FT1 <- glm(days_1 ~ amendment1, data = FT1, family = poisson)
+pois.FT1 <- glm(days_1 ~ amendment1, data = FT1, family = poisson)
+
 glm.FT1 <- glm(days_1 ~ amendment1, data = FT1)
 gamma.FT1 <- glm(days_1 ~ amendment1, family = Gamma(link = "log"), data = FT1)
 AIC(pois.FT1, glm.FT1, gamma.FT1)
@@ -416,33 +418,26 @@ plot(simulationOutput)
 # Data analysis - Leaf Area, Number of leaves, flowering time
 
 **Fit a mixed model: amendment effect is fixed, time and plant_id are random and independent.**
-
-**Selected model *(Gamma distribution)**
-
 **effect of soil amendment was significant on leaf area and number of leaves**
 
 ```{r}
 
 gamma.LA1 <- glmer(leafarea1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"),  data = LA1)
-summary(gamma.LA1)
 Anova(gamma.LA1)
 
 gamma.LA2 <- glmer(leafarea2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LA2)
-summary(gamma.LA2)
 Anova(gamma.LA2)
 
 gamma.LN1 <- glmer(no_leaves1 ~ amendment1 + (1|time1) + (1|plant_id1), family = Gamma(link = "log"), data = LN1)
-summary(gamma.LN1)
 Anova(gamma.LN1)
 
 gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
-summary(gamma.LN2)
 Anova(gamma.LN2)
 
-glm.FT1 <- glm(days_1 ~ amendment1, data = FT1)
-Anova(pois.FT1)
+pois.FT1 <- glm.nb(days_1 ~ amendment1, data = FT1, family = poisson)
+Anova(pois.FT1) # significant, but post hoc test is not!
 
-glm.FT1 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
+pois.FT2 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
 Anova(pois.FT2)
 
 #Processed frass
@@ -478,6 +473,10 @@ emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
 
 HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
+
+HSD_test <- emmeans(ref_grid(pois.FT1, regrid = "response"), pairwise ~ amendment1)
+emmeans(ref_grid(pois.FT1, regrid = "response"), pairwise ~ amendment1) # glm is sig. but post hoc test is not sig.!
+
 
 
 #processed frass
