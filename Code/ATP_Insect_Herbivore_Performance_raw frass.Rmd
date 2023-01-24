@@ -240,7 +240,7 @@ plotting theoretical quantiles against the actual quantiles of our variable'.
    
 *sample sizes are very large (>30), therefore I ignore the test for normality*
 
-```{r, echo = TRUE, eval = TRUE}
+```{r}
 
 P8 <- ggplot(data = DPR1, aes(x = amendment1, y = survival))
     P8 + geom_boxplot()
