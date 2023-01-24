@@ -161,6 +161,12 @@ summary(LA_N_comp)
 str(FT_incu_comp)
 summary(FT_incu_comp)
 
+str(FT_incu)
+summary(FT_incu)
+
+str(FT_comp)
+summary(FT_comp)
+
 ```
 
 # Visualize data - Leaf Area (LA)
