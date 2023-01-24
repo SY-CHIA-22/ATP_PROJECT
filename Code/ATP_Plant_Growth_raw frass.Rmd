@@ -246,7 +246,7 @@ ggplot(data = LA_N_comp, aes(x = amendment, y = leaf_count)) + geom_point()
 
 ```{r}
 
-# FLOWERING  time, raw frass
+#flowering time, raw frass
 P3a <- ggplot(data = FT1, aes(x = amendment1, y = days_1))
     P3a + geom_boxplot()
     P3a + geom_col()
@@ -392,6 +392,18 @@ gamma.FT_comp <- glm(days_comp ~ amendment, family = Gamma(link = "log"), data =
 AIC(pois.FT_comp, gamma.FT_comp)
 
 
+#check for model problems using the DHARMa package - no problems detected
+simulationOutput <- simulateResiduals(fittedModel = pois.FT_incu)
+plot(simulationOutput)
+
+simulationOutputinc <- simulateResiduals(fittedModel = gamma.FT_incu)
+plot(simulationOutputinc)
+
+simulationOutput <- simulateResiduals(fittedModel = pois.FT_comp)
+plot(simulationOutput)
+
+simulationOutput <- simulateResiduals(fittedModel = gamma.FT_comp)
+plot(simulationOutput)
 
 ```
 
@@ -543,6 +555,74 @@ P7b <- ggplot(FT2, aes(amendment2, days_2))+
 P7b + ylim (0, 80)
 
 ggsave("boxplot_P7b.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+#Processed frass - plots
+
+P8a <- ggplot(LA_N_incu, aes(amendment, leafarea))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8a + ylim(0, 60)
+
+ggsave("boxplot_P8a.jpeg", width = 5, height = 4, dpi = 1000)
+
+P8b <- ggplot(LA_N_comp, aes(amendment, leafarea))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Leaf area (sq cm)")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8b + ylim(0, 60)
+
+ggsave("boxplot_P8b.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P8c <- ggplot(LA_N_incu, aes(amendment, leaf_count))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Number of leaves")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8c + ylim(0, 15)
+
+ggsave("boxplot_P8c.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P8d <- ggplot(LA_N_comp, aes(amendment, leaf_count))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Number of leaves")+
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8d + ylim(0, 16)
+
+ggsave("boxplot_P8d.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P8e <- ggplot(FT_incu, aes(amendment, days_incu))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Flowering time (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8e + ylim(0, 60)
+
+ggsave("boxplot_P8e.jpeg", width = 5, height = 4, dpi = 1000)
+
+
+P8f <- ggplot(FT_comp, aes(amendment, days_comp))+ 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+  stat_summary(fun = mean, geom = "point", col = "white") + 
+  labs(x = "Treatment", y = "Flowering time (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+P8f + ylim(0, 60)
+
+ggsave("boxplot_P8f.jpeg", width = 5, height = 4, dpi = 1000)
+
 
 ```
 
