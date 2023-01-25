@@ -434,8 +434,8 @@ Anova(gamma.LN1)
 gamma.LN2 <- glmer(no_leaves2 ~ amendment2 + (1|time2) + (1|plant_id2), family = Gamma(link = "log"),  data = LN2)
 Anova(gamma.LN2)
 
-pois.FT1 <- glm.nb(days_1 ~ amendment1, data = FT1, family = poisson)
-Anova(pois.FT1) # significant, but post hoc test is not!
+pois.FT1 <- glm(days_1 ~ amendment1, data = FT1, family = poisson)
+Anova(pois.FT1) # significant
 
 pois.FT2 <- glm(days_2 ~ amendment2, data = FT2, family = poisson)
 Anova(pois.FT2)
@@ -449,8 +449,6 @@ gamma.LA_N_incuL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), fami
 Anova(gamma.LA_N_incuL)
 glmmTMB.LA_N_compL <- glmmTMB(leaf_count ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
 Anova(glmmTMB.LA_N_compL)
-pois.FT_incu <- glm(days_incu ~ amendment, data = FT_incu, family = poisson)
-Anova(pois.FT_incu)
 pois.FT_comp <- glm(days_comp ~ amendment, data = FT_comp, family = poisson)
 Anova(pois.FT_comp)
 
@@ -474,9 +472,8 @@ emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
 HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 
-HSD_test <- emmeans(ref_grid(pois.FT1, regrid = "response"), pairwise ~ amendment1)
-emmeans(ref_grid(pois.FT1, regrid = "response"), pairwise ~ amendment1) # glm is sig. but post hoc test is not sig.!
-
+LSD_Test<- LSD.test(pois.FT1,"amendment1", p.adj = "bonferroni", group = FALSE)
+LSD_Test
 
 
 #processed frass
