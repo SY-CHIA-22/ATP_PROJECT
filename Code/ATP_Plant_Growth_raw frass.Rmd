@@ -119,10 +119,6 @@ LA_N_comp$plant_id<- as.factor(LA_N_comp$plant_id)
 LA_N_comp$leaf_count<- as.numeric(LA_N_comp$leaf_count)
 LA_N_comp$leafarea<- as.numeric(LA_N_comp$leafarea)
 
-FT_incu_comp$amendment<- as.factor(FT_incu_comp$amendment)
-FT_incu_comp$Incubated<- as.numeric(FT_incu_comp$Incubated)
-FT_incu_comp$Composted<- as.numeric(FT_incu_comp$Composted)
-
 FT_incu$amendment<- as.factor(FT_incu$amendment)
 FT_incu$days_incu<- as.numeric(FT_incu$days_incu)
 
@@ -443,14 +439,23 @@ Anova(pois.FT2)
 #Processed frass
 glmmTMB.LA_N_incu <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_incu)
 Anova(glmmTMB.LA_N_incu)
+
 glmmTMB.LA_N_comp <- glmmTMB(leafarea ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
 Anova(glmmTMB.LA_N_comp)
+
 gamma.LA_N_incuL <- glmer(leaf_count ~ amendment + (1|time) + (1|plant_id), family = Gamma(link = "log"), data = LA_N_incu)
 Anova(gamma.LA_N_incuL)
+
 glmmTMB.LA_N_compL <- glmmTMB(leaf_count ~ amendment + (1|time) + (1|plant_id), data = LA_N_comp)
 Anova(glmmTMB.LA_N_compL)
+
 pois.FT_comp <- glm(days_comp ~ amendment, data = FT_comp, family = poisson)
 Anova(pois.FT_comp)
+
+pois.FT_incu <- glm(days_incu ~ amendment, data = FT_incu, family = poisson)
+Anova(pois.FT_incu)
+
+
 
 ```
 
