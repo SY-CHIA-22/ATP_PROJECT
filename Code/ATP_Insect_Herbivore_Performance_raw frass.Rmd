@@ -570,6 +570,31 @@ Anova(glm.DPW1)
 glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2)
 Anova(glm.DPW2)
 
+# compare 3 proportions
+PX=prop.test(x=c(32, 62, 50),n=c(40, 65, 57))
+ 
+# Post hoc
+
+# A difference is statistically significant if its value exceeds the critical range value
+# Set the proportions of interest.
+p = c(0.8000000, 0.9538462, 0.8771930)
+
+N = length(p)
+value = critical.range = c()
+
+## Compute critical values.
+for (i in 1:(N-1))
+   { for (j in (i+1):N)
+    {
+     value = c(value,(abs(p[i]-p[j])))
+     critical.range = c(critical.range,
+      sqrt(qchisq(.95,2))*sqrt(p[i]*(1-p[i])/300 + p[j]*(1-p[j])/300))
+    }
+   }
+
+round(cbind(value,critical.range),3) # 4 represents number of decimal places in the output
+
+
 lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1)
 Anova(lglm.DFE1)
 
