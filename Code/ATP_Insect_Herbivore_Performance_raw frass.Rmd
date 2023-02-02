@@ -1,16 +1,19 @@
 ---
 title: "Insect Herbivore Survival and Leaf damage": 
 author: "S.Y. CHIA"
-date: "January 17 2023"
+date: "January 17, 2023"
 output:
 pdf_document: default
 html_document: default
+     toc: true
+     keep_md: true
 editor_options: null
-  chunk_output_type: inline
 chunk_output_type: console
+
 ---
 
 # Load required R libraries
+
 
 ```{r}
 
@@ -510,40 +513,16 @@ gamma.DPW2 <- glm(pupalweight2 ~ amendment2, family = Gamma (link = "log"), data
 glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2) # glm.DPW2
 AIC(gamma.DPW2, glm.DPW2)
 
-
-# Calculate percentage emergence of D. radicum
-percent.em1 <- DFE1$flies1/DFE1$pupae1
-DFE1 <- cbind(percent.em1, DFE1)
-DFE1
-
-df_DFE1 = subset(DFE1, select = -c(percent.em1)) #drop duplicated column 
-
-percent.em2 <- DFE2$flies2/DFE2$pupae2
-DFE2 <- cbind(percent.em2, DFE2)
-DFE2
-df_DFE2 = subset(DFE2, select = -c(percent.em2)) #drop duplicated column 
-
-#fit models
-lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1) # logistic regression model using binary function
-gamma.DFE1 <- glm(percent.em1 ~ amendment1, family = Gamma(link = "log"), data = DFE1) # gamma.DFE1
-glm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1)
-AIC(lglm.DFE1, gamma.DFE1, glm.DFE1)
-
-lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2) # used here for consistency with lglm.DFE1
-gamma.DFE2 <- glm(percent.em2 ~ amendment2, family = Gamma(link = "log"), data = DFE2) # gamma.DFE2, small AIC but no better result
-glm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2)
-AIC(lglm.DFE2, gamma.DFE2, glm.DFE2)
-
-
+#time to fly emergence (days)
 pois.DFE1 <- glm(days1 ~ amendment1, data = DFE1, family = poisson) 
-qpois.DFE1 <- glm(days1 ~ amendment1, data = DFE1, family = quasipoisson) # nbin.DPR1
+qpois.DFE1 <- glm(days1 ~ amendment1, data = DFE1, family = quasipoisson)
 glm.DFE1 <- glm(days1 ~ amendment1, data = DFE1)
 nbin.DFE1 <- glm.nb(days1 ~ amendment1, data = DFE1)
 AIC(pois.DFE1, qpois.DFE1, glm.DFE1, nbin.DFE1)
 
 
 pois.DFE2 <- glm(days2 ~ amendment2, data = DFE2, family = poisson) 
-qpois.DFE2  <- glm(days2 ~ amendment2, data = DFE2, family = quasipoisson) # nbin.DPR1
+qpois.DFE2  <- glm(days2 ~ amendment2, data = DFE2, family = quasipoisson)
 glm.DFE2  <- glm(days2 ~ amendment2, data = DFE2)
 nbin.DFE2 <- glm.nb(days2 ~ amendment2, data = DFE2)
 AIC(pois.DFE2, qpois.DFE2, glm.DFE2, nbin.DFE2)
@@ -551,10 +530,10 @@ AIC(pois.DFE2, qpois.DFE2, glm.DFE2, nbin.DFE2)
 
 ```
 
-# Data analysis - Delia radicum
+# Data analysis - Delia radicum: larval survival, pupal weight
 
 **Fit a mixed model: amendment effect is main/fixed and independent.**
-**DPR1, DPR2, DPW1, DFE1 show significant differences** *DPW2 is only marginally significant (p=0.077)*
+**DPR1, DPR2, DPW1, show significant differences** *DPW2 is only marginally significant (p=0.077)*
 
 ```{r}
 
@@ -570,43 +549,27 @@ Anova(glm.DPW1)
 glm.DPW2 <- glm(pupalweight2 ~ amendment2, data = DPW2)
 Anova(glm.DPW2)
 
-# compare 3 proportions
-PX=prop.test(x=c(32, 62, 50),n=c(40, 65, 57))
+```
+
+# Data analysis - Delia radicum: Fly emergence and time to emergence
+ *compare 3 proportions using a chi-squared test*
  
-# Post hoc
 
-# A difference is statistically significant if its value exceeds the critical range value
-# Set the proportions of interest.
-p = c(0.8000000, 0.9538462, 0.8771930)
+```{r}
 
-N = length(p)
-value = critical.range = c()
+# Fly emergence
+prop.test(x=c(32, 62, 50),n=c(40, 65, 57)) # trial 1
 
-## Compute critical values.
-for (i in 1:(N-1))
-   { for (j in (i+1):N)
-    {
-     value = c(value,(abs(p[i]-p[j])))
-     critical.range = c(critical.range,
-      sqrt(qchisq(.95,2))*sqrt(p[i]*(1-p[i])/300 + p[j]*(1-p[j])/300))
-    }
-   }
-
-round(cbind(value,critical.range),3) # 4 represents number of decimal places in the output
+prop.test(x=c(22, 41, 35),n=c(29, 51, 45)) # trial 2
 
 
-lglm.DFE1 <- glm(percent.em1 ~ amendment1, data = DFE1, family = "binomial", weights = pupae1)
-Anova(lglm.DFE1)
+#time to emergence
 
-lglm.DFE2 <- glm(percent.em2 ~ amendment2, data = DFE2, family = "binomial", weights = pupae2)
-Anova(lglm.DFE2)
+pois.DFE1 <- glm(days1 ~ amendment1, data = DFE1, family = poisson) 
+Anova(pois.DFE1) 
 
-pois.DFE1 <- glm(days1 ~ amendment1, data = DFE1, family = poisson)
-Anova(pois.DFE1)
-
-pois.DFE2 <- glm(days2 ~ amendment2, data = DFE2, family = poisson)
+pois.DFE2  <- glm(days2 ~ amendment2, data = DFE2, family = poisson)
 Anova(pois.DFE2)
-
 
 ```
 
@@ -625,11 +588,9 @@ analysis_l # "l" indicates list
 
 ```
 
-# Posthoc test - Delia radicum
-
+# Marascuilo Procedure - Post hoc test
 **Tukey test using the emmeans (estimated marginal means) package**
-
-*DPR1, DPR2, DPW1, DFE1 (% and time)*
+*DPR1, DPR2, DPW1, DFE1 (time)*
 
 ```{r}
 
@@ -643,8 +604,51 @@ emmeans(ref_grid(pois.DPR2, regrid = "response"), pairwise ~ amendment2)
 HSD_test.DPW1 <- emmeans(ref_grid(glm.DPW1, regrid = "response"), pairwise ~ amendment1)
 emmeans(ref_grid(glm.DPW1, regrid = "response"), pairwise ~ amendment1)
 
+#DFE1 (time to emergence)
 HSD_test.lglm.DFE1 <- emmeans(ref_grid(lglm.DFE1, regrid = "response"), pairwise ~ amendment1)
 emmeans(ref_grid(lglm.DFE1, regrid = "response"), pairwise ~ amendment1)
+
+#DFE1&2 (percent emergence)
+
+# Comparing multiple proportions using The Marascuillo procedure
+# A difference is statistically significant if its value exceeds the critical range value
+
+# Trial 1
+p = c(0.8000000, 0.9538462, 0.8771930) # Set the proportions of interest
+
+N = length(p)
+value = critical.range = c()
+
+## Compute critical values.
+for (i in 1:(N-1))
+   { for (j in (i+1):N)
+    {
+     value = c(value,(abs(p[i]-p[j])))
+     critical.range = c(critical.range,
+      sqrt(qchisq(.95,2))*sqrt(p[i]*(1-p[i]) + p[j]*(1-p[j])))
+    }
+   }
+
+round(cbind(value,critical.range),3) # 4 represents number of decimal places in the output
+
+
+#Trial 2
+p = c(0.7586207, 0.8039216, 0.7777778) 
+
+N = length(p)
+value = critical.range = c()
+
+## Compute critical values.
+for (i in 1:(N-1))
+   { for (j in (i+1):N)
+    {
+     value = c(value,(abs(p[i]-p[j])))
+     critical.range = c(critical.range,
+      sqrt(qchisq(.95,2))*sqrt(p[i]*(1-p[i]) + p[j]*(1-p[j])))
+    }
+   }
+
+round(cbind(value,critical.range),3)
 
 ```
 
