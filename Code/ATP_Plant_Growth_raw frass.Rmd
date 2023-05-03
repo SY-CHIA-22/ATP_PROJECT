@@ -477,7 +477,7 @@ emmeans(ref_grid(gamma.LN1, regrid = "response"), pairwise ~ amendment1)
 HSD_test <- emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 emmeans(ref_grid(gamma.LN2, regrid = "response"), pairwise ~ amendment2)
 
-LSD_Test<- LSD.test(pois.FT1,"amendment1", p.adj = "bonferroni", group = FALSE)
+LSD_Test<- LSD.test(pois.FT1,"amendment1", p.adj = "bonferroni", group = FALSE) # LSD test
 LSD_Test
 
 

@@ -8,14 +8,14 @@ html_document: default
      toc: true
      keep_md: true
 editor_options: null
+  chunk_output_type: console
 chunk_output_type: console
-
 ---
 
 # Load required R libraries
 
 
-```{r}
+```{r Libraries}
 
 library(ggplot2)
 library(car)
@@ -589,6 +589,7 @@ analysis_l # "l" indicates list
 ```
 
 # Marascuilo Procedure - Post hoc test
+
 **Tukey test using the emmeans (estimated marginal means) package**
 *DPR1, DPR2, DPW1, DFE1 (time)*
 
@@ -665,7 +666,8 @@ P18 <- ggplot(DPR1, aes(amendment1, survival))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P18 + ylim (0, 100)
 
-ggsave("boxplot_P18.jpeg", width = 5, height = 4, dpi = 1000)
+ggsave("boxplot_P18.pdf", width = 5, height = 4, dpi = 1000) # P18 = Figure 3 in the manuscript
+ggsave("boxplot_P18.SVG", width = 5, height = 4, dpi = 1000)
 
 
 P19 <- ggplot(DPR2, aes(amendment2, survival))+ 
@@ -676,7 +678,7 @@ P19 <- ggplot(DPR2, aes(amendment2, survival))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P19 + ylim (0, 100)
 
-ggsave("boxplot_P19.jpeg", width = 5, height = 4, dpi = 1000)
+ggsave("boxplot_P19.pdf", width = 5, height = 4, dpi = 1000) 
 
 
 # Pupal weight
@@ -688,7 +690,7 @@ P20 <- ggplot(DPW1, aes(amendment1, pupalweight1))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P20 + ylim (0, 16)
 
-ggsave("boxplot_P20.jpeg", width = 5, height = 4, dpi = 1000)
+ggsave("boxplot_P20.jpeg", width = 5, height = 4, dpi = 1000)# P19 = Figure 4 in the manuscript
 
 
 P21 <- ggplot(DPW2, aes(amendment2, pupalweight2))+ 
@@ -895,7 +897,7 @@ P26 <- ggplot(PPR1, aes(amendment1, survival))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P26 + ylim (0, 100)
 
-ggsave("boxplot_P26.jpeg", width = 5, height = 4, dpi = 1000)
+ggsave("boxplot_P26.pdf", width = 5, height = 4, dpi = 1000)# P26 = Figure 5 in the manuscript
 
 
 P27<- ggplot(PPR2, aes(amendment2, survival))+ 
