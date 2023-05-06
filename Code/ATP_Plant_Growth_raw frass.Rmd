@@ -549,7 +549,7 @@ P7a <- ggplot(FT1, aes(amendment1, days_1))+
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + # repeating this line helps to make the "mean symbol appear pure white
-  labs(x = "Treatment", y = "Flowering time (days)")+
+  labs(x = "Treatment", y = "Time until flowering (days)")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P7a + ylim (0, 96)
 
@@ -560,7 +560,7 @@ P7b <- ggplot(FT2, aes(amendment2, days_2))+
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + # repeating this line helps to make the "mean symbol appear pure white
-  labs(x = "Treatment", y = "Flowering time (days)")+
+  labs(x = "Treatment", y = "Time until flowering (days)")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P7b + ylim (0, 80)
 
