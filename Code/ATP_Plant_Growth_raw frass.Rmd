@@ -6,6 +6,7 @@ output:
 pdf_document: default
 html_document: default
 editor_options: null
+  chunk_output_type: console
 chunk_output_type: console
 ---
 
@@ -38,7 +39,9 @@ library(dplyr)
 # Set working directory
 
 ```{r}
-setwd("C:/ATP_PROJECT/Data")
+
+setwd("C:/Users/shaph/Desktop/ATP_PROJECT/Data")
+
 ```
 
 # Load and prepare the data
@@ -517,7 +520,7 @@ P5 <- ggplot(LA2, aes(amendment2, leafarea2))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6")) # Dark Sky Blue
 P5 + ylim(0, 115)
 
-ggsave("boxplot_P5.jpeg", width = 5, height = 4, dpi = 1000)
+ggsave("boxplot_P5.pdf", width = 5, height = 4, dpi = 1000)
 
 
 P6 <- ggplot(LN1, aes(amendment1, no_leaves1))+ 
@@ -525,7 +528,7 @@ P6 <- ggplot(LN1, aes(amendment1, no_leaves1))+
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
   labs(x = "Treatment", y = "Number of leaves")+
-  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6")) # Dark Sky Blue
 P6 + ylim(0, 15)
 
 ggsave("boxplot_P6.jpeg", width = 5, height = 4, dpi = 1000)

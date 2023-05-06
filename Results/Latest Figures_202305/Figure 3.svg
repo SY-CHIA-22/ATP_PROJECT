@@ -5,10 +5,11 @@
    viewBox="0 0 537 411"
    version="1.1"
    id="svg469"
-   sodipodi:docname="Rplot.svg"
+   sodipodi:docname="Figure 3.svg"
    inkscape:export-filename="Rplot.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,7 +25,16 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="pt"
-     showgrid="false" />
+     showgrid="false"
+     inkscape:zoom="0.9580292"
+     inkscape:cx="358.02667"
+     inkscape:cy="358.02667"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g364" />
   <defs
      id="defs172">
     <rect
@@ -947,7 +957,7 @@
        style="fill:#000000;fill-opacity:1"
        id="g466"
        inkscape:transform-center-y="7.8566308"
-       transform="translate(1.4462366,12.740143)">
+       transform="translate(-0.0537634,3.740143)">
       <use
          xlink:href="#glyph2-7"
          x="13.351563"
@@ -975,19 +985,19 @@
          id="use452" />
       <text
          xml:space="preserve"
-         style="font-style:italic;font-size:9.05302px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic';fill:#008000;stroke-width:0.754417"
+         style="font-style:italic;font-size:11px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic';fill:#008000;stroke-width:0.754417"
          x="-278.90265"
          y="18.662924"
          id="text743"
          transform="matrix(0.0120579,-0.99407285,1.0058179,0.01191711,0,0)"><tspan
            sodipodi:role="line"
            id="tspan741"
-           style="font-style:normal;line-height:0.1;stroke-width:0.754417"
+           style="font-style:normal;font-size:11px;line-height:0.1;fill:#000000;stroke-width:0.754417"
            x="-278.90265"
-           y="18.662924"> <tspan
+           y="18.662924"> Su<tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:0.1;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;stroke-width:0.754417"
-   id="tspan899">Percent survival of <tspan
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;font-family:Arial;-inkscape-font-specification:'Arial Italic';stroke-width:0.754417"
+   id="tspan899">rvival (%) of <tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;font-family:Arial;-inkscape-font-specification:'Arial Italic';fill:#000000;stroke-width:0.754417"
    id="tspan953">Delia radicum</tspan> larvae</tspan></tspan></text>
     </g>
     <text
@@ -1095,51 +1105,51 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:0.1;font-family:Arial;-inkscape-font-specification:Arial;white-space:pre;shape-inside:url(#rect1890);fill:#000000" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.99998px;line-height:0.1;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;stroke-width:0.75"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:0.1;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;stroke-width:0.75"
        x="294.65051"
        y="259.84052"
        id="text1896"><tspan
          sodipodi:role="line"
-         style="font-weight:bold;stroke-width:0.75"
+         style="font-weight:bold;font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="259.84052"
          id="tspan1900"><tspan
-   style="font-style:italic;font-weight:bold"
+   style="font-style:italic;font-weight:bold;font-size:10px"
    id="tspan2024">P</tspan> <tspan
-   style="font-style:italic;font-weight:bold"
+   style="font-style:italic;font-weight:bold;font-size:10px"
    id="tspan2026">&lt; 0.0001</tspan></tspan><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="260.84052"
          id="tspan1902" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="261.84052"
          id="tspan1904" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="262.84052"
          id="tspan1906" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="263.84052"
          id="tspan1908" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="264.84052"
          id="tspan1910" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="265.84052"
          id="tspan1912" /><tspan
          sodipodi:role="line"
-         style="stroke-width:0.75"
+         style="font-size:10px;stroke-width:0.75"
          x="294.65051"
          y="266.84052"
          id="tspan1914" /></text>
@@ -1153,7 +1163,7 @@
          id="tspan1922"
          style="stroke-width:0.75"
          x="297.07886"
-         y="260.25089"></tspan><tspan
+         y="260.25089" /><tspan
          sodipodi:role="line"
          style="stroke-width:0.75"
          id="tspan1926"
@@ -1179,7 +1189,7 @@
          id="tspan1958"
          style="stroke-width:0.75"
          x="296.09677"
-         y="262.21503"></tspan><tspan
+         y="262.21503" /><tspan
          sodipodi:role="line"
          style="stroke-width:0.75"
          id="tspan1962"
@@ -1207,28 +1217,18 @@
          id="tspan1970" /></text>
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:400;font-size:11.9531px;line-height:125%;font-family:'Times New Roman';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75"
+       style="font-style:italic;font-variant:normal;font-weight:400;font-size:10px;line-height:125%;font-family:'Times New Roman';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75"
        x="295.49384"
-       y="272.37323"
+       y="273.87323"
        id="text2011"><tspan
          sodipodi:role="line"
          x="295.49384"
-         y="272.37323"
+         y="273.87323"
          id="tspan2009"
-         style="font-weight:bold;stroke-width:0.75"><tspan
-           dx="0"
-           dy="0"
-           style="font-style:italic;font-variant:normal;font-weight:bold;font-size:11.9531px;font-family:'Times New Roman';fill:#000000;stroke-width:0.75"
-           id="tspan2001">χ</tspan><tspan
-           dx="0"
-           dy="-4.5510101"
-           style="font-style:italic;font-variant:normal;font-weight:bold;font-size:8.01562px;font-family:'Times New Roman';fill:#000000;stroke-width:0.75"
-           id="tspan2003">2</tspan><tspan
-           dx="0"
-           dy="4.5510101"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-size:11.9531px;font-family:'Times New Roman';fill:#000000;stroke-width:0.75"
-           id="tspan2005"> </tspan><tspan
-           style="font-style:italic;font-variant:normal;font-weight:bold;font-size:11.0156px;font-family:Calibri;fill:#000000;stroke-width:0.75"
-           id="tspan2007">= 31.02</tspan></tspan></text>
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Arial;-inkscape-font-specification:'Arial Bold Italic';stroke-width:0.75"><tspan
+           dx="0 0 0"
+           dy="0 -4.5510101 4.5510101"
+           style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Arial;-inkscape-font-specification:'Arial Bold Italic';fill:#000000;stroke-width:0.75"
+           id="tspan2001">χ2 = 31.02</tspan></tspan></text>
   </g>
 </svg>
