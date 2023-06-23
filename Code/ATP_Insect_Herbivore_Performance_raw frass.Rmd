@@ -686,7 +686,7 @@ P20 <- ggplot(DPW1, aes(amendment1, pupalweight1))+
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  labs(x = "Treatment", y = "Biomass (mg) of Delia radicum pupae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P20 + ylim (0, 16)
 
@@ -697,7 +697,7 @@ P21 <- ggplot(DPW2, aes(amendment2, pupalweight2))+
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  labs(x = "Treatment", y = "Biomass (mg) of Delia radicum pupae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P21 + ylim (0, 17)
 
