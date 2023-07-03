@@ -537,6 +537,14 @@ AIC(pois.DFE2, qpois.DFE2, glm.DFE2, nbin.DFE2)
 
 ```{r}
 
+# Calculate the mean and median values for each level of the independent variable (amendment1)
+result <- aggregate(DPR1$survival, by = list(DPR1$amendment1), FUN = function(x) c(mean = mean(x), median = median(x)))
+
+# Print the result
+print(result)
+
+# proper anlysis
+
 pois.DPR1 <- glm(survival ~ amendment1, data = DPR1, family = poisson)
 Anova(pois.DPR1)
 
