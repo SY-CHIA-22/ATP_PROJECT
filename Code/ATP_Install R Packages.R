@@ -35,7 +35,9 @@ renv::restore(packages = c( "ggplot2",
                             "DHARMa",
                             "patchwork", 
                             "moments", 
-                            "glmmTMB"
+                            "glmmTMB", 
+                            "multcomp",
+                            "multcompLetters"
                             ))
 
 

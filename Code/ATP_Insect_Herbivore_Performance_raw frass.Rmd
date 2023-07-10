@@ -537,6 +537,14 @@ AIC(pois.DFE2, qpois.DFE2, glm.DFE2, nbin.DFE2)
 
 ```{r}
 
+# Calculate the mean and median values for each level of the independent variable (amendment1)
+result <- aggregate(DPR1$survival, by = list(DPR1$amendment1), FUN = function(x) c(mean = mean(x), median = median(x)))
+
+# Print the result
+print(result)
+
+# proper anlysis
+
 pois.DPR1 <- glm(survival ~ amendment1, data = DPR1, family = poisson)
 Anova(pois.DPR1)
 
@@ -588,7 +596,8 @@ analysis_l # "l" indicates list
 
 ```
 
-# Marascuilo Procedure - Post hoc test
+##Pst hoc test
+Marascuilo Procedure - Post hoc test
 
 **Tukey test using the emmeans (estimated marginal means) package**
 *DPR1, DPR2, DPW1, DFE1 (time)*
@@ -686,7 +695,7 @@ P20 <- ggplot(DPW1, aes(amendment1, pupalweight1))+
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  labs(x = "Treatment", y = "Biomass (mg) of Delia radicum pupae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P20 + ylim (0, 16)
 
@@ -697,7 +706,7 @@ P21 <- ggplot(DPW2, aes(amendment2, pupalweight2))+
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Wet weight (mg) of Delia radicum pupae")+
+  labs(x = "Treatment", y = "Biomass (mg) of Delia radicum pupae")+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P21 + ylim (0, 17)
 

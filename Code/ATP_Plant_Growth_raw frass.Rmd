@@ -33,6 +33,7 @@ library(dgof)
 library(moments)
 library(glmmTMB)
 library(dplyr)
+library(multcomp)
 
 ```
 
@@ -107,12 +108,12 @@ FT2$days_2 <- as.numeric(FT2$days_2)
 
 
 # pre-treated (incubated and composted) frass
-
+#LA_N_incu = Leaf Area and Number of leaves data
 LA_N_incu$amendment<- as.factor(LA_N_incu$amendment)
-LA_N_incu$time<- as.factor(LA_N_incu$time)
-LA_N_incu$plant_id<- as.factor(LA_N_incu$plant_id)
-LA_N_incu$leaf_count<- as.numeric(LA_N_incu$leaf_count)
-LA_N_incu$leafarea<- as.numeric(LA_N_incu$leafarea)
+LA_N_incu$time <- as.factor(LA_N_incu$time)
+LA_N_incu$plant_id <-as.factor(LA_N_incu$plant_id)
+LA_N_incu$leaf_count <-as.numeric(LA_N_incu$leaf_count)
+LA_N_incu$leafarea <-as.numeric(LA_N_incu$leafarea)
 
 LA_N_comp$amendment<- as.factor(LA_N_comp$amendment)
 LA_N_comp$time <-as.factor(LA_N_comp$time)
@@ -614,7 +615,7 @@ P8e <- ggplot(FT_incu, aes(amendment, days_incu))+
   geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Flowering time (days)") +
+  labs(x = "Treatment", y = "Time until flowering (days)") +
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P8e + ylim(0, 60)
 
@@ -625,7 +626,7 @@ P8f <- ggplot(FT_comp, aes(amendment, days_comp))+
   geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
   stat_summary(fun = mean, geom = "point", col = "white") + 
-  labs(x = "Treatment", y = "Flowering time (days)") +
+  labs(x = "Treatment", y = "Time until flowering (days)") +
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P8f + ylim(0, 60)
 
@@ -634,8 +635,993 @@ ggsave("boxplot_P8f.jpeg", width = 5, height = 4, dpi = 1000)
 
 ```
 
+# Raw Frass: Analyse leaf area and leaf number (repeated measures) separately, i.e., for each time point (21, 28, 35 and 42 days since germination).
+
+By day 35 - 42, the negative effect of Mealworm frass had disappeared
+
+## Plots *leafarea1* - Trial 1
+
+```{r}
+# Filter data for the desired time1 values
+filtered_LA1 <- subset(LA1, time1 %in% c(21, 28, 35, 42))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LA1 for the current time1 value
+  subset_LA1 <- subset(filtered_LA1, time1 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA1$leafarea1)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(leafarea1 ~ amendment1, data = subset_LA1,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Leaf area (sq cm)",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA1$leafarea1, subset_LA1$amendment1, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+
+## Plots for time points 21, 28 and 35 
+(Raw Frass)
+
+
+```{r}
+# Filter data for the desired time1 values
+filtered_LA1 <- subset(LA1, time1 %in% c(21, 28, 35))
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35)) {
+  # Subset LA1 for the current time1 value
+  subset_LA1 <- subset(filtered_LA1, time1 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA1$leafarea1)
+  
+
+# Create the boxplot
+boxplot(leafarea1 ~ amendment1, data = subset_LA1,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Leaf area (sq cm)",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA1$leafarea1, subset_LA1$amendment1, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+
+## Plots for time points 42
+
+
+```{r}
+# Filter data for the desired time1 values
+filtered_LA1 <- subset(LA1, time1 %in% c(42)) #
+
+# Create separate boxplots for the time1 value = 42
+for (time_val in c(42)) {
+  # Subset LA1 for the current time1 value
+  subset_LA1 <- subset(filtered_LA1, time1 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA1$leafarea1)
+  
+# Create the boxplot
+p_42 <- ggplot(subset_LA1, aes(amendment1, leafarea1))+ 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
+ stat_summary(fun = mean, geom = "point", col = "white") +
+  labs(title = paste("Plant age (days) =", time_val),
+       x = "Treatment", y = "Leaf area (sq cm)") +
+  ylim(c(y_min, y_max)) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))
+
+p_42
+}
+
+```
+
+
+## Analysis (GLM) - *Leafarea1* (Raw Frass)
+
+
+```{r}
+# Subset the data for time1 = 21 and fit the GLM model
+model_21 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 21), family = gaussian)
+
+# Print the ANOVA table for time1 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 28), family = gaussian)
+
+# Print the ANOVA table for time1 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 35), family = gaussian)
+
+# Print the ANOVA table for time1 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time1 = 42 and fit the GLM model
+model_42 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 42), family = gaussian)
+
+# Print the ANOVA table for time1 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+```
+
+
+## Post hoc test - leafarea1
+
+```{r}
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment1'
+amendment_levels <- levels(LA1$amendment1)
+
+# Perform the Tukey post hoc test for time1 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+```
+
+
+##Count the number of samples for each time1 value, for each level of amendment1
+
+```{r}
+sample_counts <- table(LA1$time1, LA1$amendment1)
+
+# Display the sample counts
+print(sample_counts)
+
+```
+
+
+#Raw Frass
+##Analyse *leaf area 2* (repeated measures) separately, i.e., for each time point (21, 28, 35 and 42 days since germination).
+
+## by day 35 - 42, the negative effect of Mealworm frass had disappeared
+
+## Plots
+
+```{r}
+# Filter data for the desired time2 values
+filtered_LA2 <- subset(LA2, time2 %in% c(21, 28, 35, 42))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time2 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LA2 for the current time2 value
+  subset_LA2 <- subset(filtered_LA2, time2 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA2$leafarea2)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(leafarea2 ~ amendment2, data = subset_LA2,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Leaf area (sq cm)",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA2$leafarea2, subset_LA2$amendment2, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+## Analysis (GLM) - *Leafarea2* (Raw Frass)
+
+```{r}
+# Subset the data for time2 = 21 and fit the GLM model
+model_21 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 21), family = gaussian)
+
+# Print the ANOVA table for time2 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 28), family = gaussian)
+
+# Print the ANOVA table for time2 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 35), family = gaussian)
+
+# Print the ANOVA table for time2 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time2 = 42 and fit the GLM model
+model_42 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 42), family = gaussian)
+
+# Print the ANOVA table for time2 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+```
+
+## Counts (replicates per treatment)
+
+```{r}
+sample_counts <- table(LA2$time2, LA2$amendment2)
+
+# Display the sample counts
+print(sample_counts)
+```
+
+
+## Post hoc test - leafarea2
+
+```{r}
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LA2$amendment2)
+
+# Perform the Tukey post hoc test for time2 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+```
+
+
+#RawFrass:LeafNumber, Trial 1
+Analyse leafnumber (repeated measures) separately, i.e., for each time point (21, 28, 35 and 42 days since germination).
+
+## Plots
+
+```{r}
+# Filter data for the desired time1 values
+filtered_LN1 <- subset(LN1, time1 %in% c(21, 28, 35, 42))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LA1 for the current time1 value
+  subset_LN1 <- subset(filtered_LN1, time1 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LN1$no_leaves1)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(no_leaves1 ~ amendment1, data = subset_LN1,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Number of leaves",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean value
+mean_values <- tapply(subset_LN1$no_leaves1 , subset_LN1$amendment1, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+
+## Analysis (GLM) - *LeafNumber1* (Raw Frass)
+
+```{r}
+# Subset the data for time1 = 21 and fit the GLM model
+model_21 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 21), family = gaussian)
+
+# Print the ANOVA table for time1 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 28), family = gaussian)
+
+# Print the ANOVA table for time1 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 35), family = gaussian)
+
+# Print the ANOVA table for time1 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time1 = 42 and fit the GLM model
+model_42 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 42), family = gaussian)
+
+# Print the ANOVA table for time1 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+```
+
+## Count the number of samples for each time1 value, for each level of amendment1
+```{r}
+sample_counts <- table(LN1$time1, LN1$amendment1)
+
+# Display the sample counts
+print(sample_counts)
+```
+
+
+## Post hoc test - Number of leaves, trial 1
+```{r}
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment1'
+amendment_levels <- levels(LN1$amendment1)
+
+# Perform the Tukey post hoc test for time1 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+```
+
+
+#RawFrass:LeafNumber, Trial 2
+Analyse leafnumber (repeated measures) separately, i.e., for each time point (21, 28, 35 and 42 days since germination).
+
+## Plots
+
+```{r}
+# Filter data for the desired time2 values
+filtered_LN2 <- subset(LN2, time2 %in% c(21, 28, 35, 42))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time2 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LN2 for the current time2 value
+  subset_LN2 <- subset(filtered_LN2, time2 == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LN2$no_leaves2)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(no_leaves2 ~ amendment2, data = subset_LN2,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Number of leaves",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean value
+mean_values <- tapply(subset_LN2$no_leaves2 , subset_LN2$amendment2, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+## Analysis (GLM) - *LeafNumber2* (Raw Frass)
+
+```{r}
+# Subset the data for time2 = 21 and fit the GLM model
+model_21 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 21), family = gaussian)
+
+# Print the ANOVA table for time2 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time2 = 28 and fit the GLM model
+model_28 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 28), family = gaussian)
+
+# Print the ANOVA table for time2 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time2 = 35 and fit the GLM model
+model_35 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 35), family = gaussian)
+
+# Print the ANOVA table for time2 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time2 = 42 and fit the GLM model
+model_42 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 42), family = gaussian)
+
+# Print the ANOVA table for time2 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+```
+
+## Count the number of samples for each time2 value, for each level of amendment2
+```{r}
+sample_counts <- table(LN2$time2, LN2$amendment2)
+
+# Display the sample counts
+print(sample_counts)
+```
+
+## Post hoc test - Number of leaves, trial 2
+
+```{r}
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LN2$amendment2)
+
+# Perform the Tukey post hoc test for time2 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+```
+
+
+#Incubated frass
+##Plots *Leafarea*
+
+```{r}
+# Filter data for the desired time values
+filtered_LA_N_incu<- subset(LA_N_incu, time %in% c(14, 21, 28, 35))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  # Subset LA_N_incu for the current time value
+  subset_LA_N_incu <- subset(filtered_LA_N_incu, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA_N_incu$leafarea)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(leafarea ~ amendment, data = subset_LA_N_incu,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Leaf area (sq cm)",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA_N_incu$leafarea, subset_LA_N_incu$amendment, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+##Analysis (GLM)
+
+```{r}
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+```
+
+## Counts (replicates per treatment)
+
+```{r}
+sample_counts <- table(LA_N_incu$time, LA_N_incu$amendment)
+
+# Display the sample counts
+print(sample_counts)
+```
+
+
+##Post hoc test
+
+```{r}
+# You have already fitted the GLM models and stored them as 'model_14', 'model_21', 'model_28', 'model_35'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LA_N_incu$amendment)
+
+
+# Perform the Tukey post hoc test for time = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+```
+
+
+
+#Incubated frass
+##Plots *Number of leaves*
+
+
+```{r}
+# Filter data for the desired time values
+filtered_LA_N_incu<- subset(LA_N_incu, time %in% c(14, 21, 28, 35))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  
+  # Subset LA_N_incu for the current time value
+  subset_LA_N_incu <- subset(filtered_LA_N_incu, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA_N_incu$leaf_count)
+  
+  # Create the boxplot
+  
+# Create the boxplot
+boxplot(leaf_count ~ amendment, data = subset_LA_N_incu,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Number of leaves",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA_N_incu$leaf_count, subset_LA_N_incu$amendment, mean)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+
+}
+```
+
+##Analysis (GLM)
+ No significant difference among amendments
+
+```{r}
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+```
+
+## Counts (replicates per treatment)
+
+```{r}
+sample_counts <- table(LA_N_incu$time, LA_N_incu$amendment)
+
+# Display the sample counts
+print(sample_counts)
+
+```
+
+
+#Composted frass
+##Plots *Leafarea*
+
+
+```{r}
+# Filter data for the desired time values
+filtered_LA_N_comp <- subset(LA_N_comp, time %in% c(14, 21, 28, 35))
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  
+  # Subset LA_N_comp for the current time value
+  subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA_N_comp$leafarea, na.rm = TRUE)
+  
+  # Create the boxplot
+  boxplot(leafarea ~ amendment, data = subset_LA_N_comp,
+          main = paste("Plant age (days) =", time_val), 
+          xlab = "Treatment", ylab = "Leaf area (sq cm)",
+          ylim = c(y_min, y_max),
+          col = c("#91bad6", "#91bad6", "#91bad6"))
+  
+  # Calculate the mean values
+  mean_values <- tapply(subset_LA_N_comp$leafarea, subset_LA_N_comp$amendment, mean, na.rm = TRUE)
+  
+  # Plot the mean values as white squares
+  points(mean_values, pch = 22, col = "white", bg = "white")
+}
+
+```
+
+##Analysis (GLM)
+
+```{r}
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+```
+
+##Count samples, while excluding NAs from the data
 
 ```{r}
 
+# Exclude NA values from the dataset
+filtered_LA_N_comp <- na.omit(LA_N_comp)
+
+# Counts (replicates per treatment)
+sample_counts <- table(filtered_LA_N_comp$time, filtered_LA_N_comp$amendment)
+
+# Display the sample counts
+print("Counts (replicates per treatment):")
+print(sample_counts)
 
 ```
+
+
+##Post hoc test: run codes for model_14 and model_35 separately
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_14'
+
+# Load the necessary library (if not already loaded)
+library(lsmeans)
+
+# Perform the LSD post hoc test
+posthoc_14 <- lsmeans(model_14, pairwise ~ amendment, adjust = "none")
+
+# Print the LSD post hoc test results for time = 14
+summary(posthoc_14, level = 0.05)
+
+
+# Perform the LSD post hoc test
+posthoc_35 <- lsmeans(model_35, pairwise ~ amendment, adjust = "none")
+
+# Print the LSD post hoc test results for time = 
+summary(posthoc_35, level = 0.05)
+
+```
+
+
+#Composted frass
+##Plots *Number of leaves*
+
+
+```{r}
+# Filter data for the desired time values
+filtered_LA_N_comp<- subset(LA_N_comp, time %in% c(14, 21, 28, 35))
+
+# Create a new empty plot
+plot.new()
+
+# Set the layout for the composite plot
+par(mfrow = c(2, 2))  # 2 rows and 2 columns
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  
+  # Subset LA_N_incu for the current time value
+  subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA_N_comp$leaf_count, na.rm = TRUE)
+  
+  
+# Create the boxplot
+boxplot(leaf_count ~ amendment, data = subset_LA_N_comp,
+        main = paste("Plant age (days) =", time_val),
+        xlab = "Treatment", ylab = "Number of leaves",
+        ylim = c(y_min, y_max),
+        col = c("#91bad6", "#91bad6", "#91bad6"))
+
+# Calculate the mean values
+mean_values <- tapply(subset_LA_N_comp$leaf_count, subset_LA_N_comp$amendment, mean, na.rm = TRUE)
+
+# Plot the mean values as white squares
+points(mean_values, pch = 22, col = "white", bg = "white")
+}
+
+```
+
+##Analysis (GLM)
+ No significant difference among amendments
+
+```{r}
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+```
+
+##Count samples, while excluding NAs from the data
+
+```{r}
+
+# Obtain summary statistics for the dataset, including NA counts
+summary_stats <- summary(LA_N_comp, na.count = TRUE)
+
+# Display the summary statistics
+print(summary_stats)
+
+```
+
+
+##Post hoc test
+
+```{r}
+# You have already fitted the GLM models and stored them as 'model_14', 'model_21'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment'
+amendment_levels <- levels(LA_N_comp$amendment)
+
+
+# Perform the Tukey post hoc test for time = 14
+posthoc_14 <- glht(model_14, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 14
+summary(posthoc_14, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+```
+
