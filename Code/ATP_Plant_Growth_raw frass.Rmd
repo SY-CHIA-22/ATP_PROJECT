@@ -737,6 +737,7 @@ for (time_val in c(21, 28, 35, 42)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -874,6 +875,7 @@ title("Composite Boxplot with Treatments and Outlines")
 
 
 #### Plot leaf area at time points 21, 28 and 35 days, *Present as a panel*
+
 (old code, not used)
 
 ```{r}
@@ -1090,6 +1092,7 @@ for (time_val in c(21, 28, 35, 42)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -1290,6 +1293,7 @@ for (time_val in c(21, 28, 35, 42)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -1488,6 +1492,7 @@ for (time_val in c(21, 28, 35, 42)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -1758,6 +1763,7 @@ for (time_val in c(14, 21, 28, 35)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -1940,6 +1946,7 @@ for (time_val in c(14, 21, 28, 35)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -2128,6 +2135,7 @@ for (time_val in c(14, 21, 28, 35)) {
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
       panel.grid.major = element_blank(),  # Remove major gridlines
       panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
       axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
     )
   
@@ -2283,7 +2291,6 @@ summary(posthoc_35, level = 0.05)
 library(ggplot2)
 library(gridExtra)
 
-
 # Filter data for the desired time2 values
 filtered_LA_N_comp <- subset(LA_N_comp, time %in% c(14, 21, 28, 35))
 
@@ -2293,11 +2300,11 @@ plots_list <- list()
 # Create separate boxplots for each time value
 for (time_val in c(14, 21, 28, 35)) {
   # Subset LA_N_comp for the current time value
- subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
+  subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
    
   # Determine the y-axis limits
   y_min <- 0
- y_max <- max(subset_LA_N_comp$leaf_count, na.rm = TRUE)
+  y_max <- max(subset_LA_N_comp$leaf_count, na.rm = TRUE)
   
   # Create the ggplot object
   plot <- ggplot(subset_LA_N_comp, aes(x = amendment, y = leaf_count, fill = amendment)) +
@@ -2309,11 +2316,12 @@ for (time_val in c(14, 21, 28, 35)) {
     theme_minimal() +
     theme(
       axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
-      legend.position = "none",  # Remove the legend
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black"),        # Add tick marks on the y-axis
+      legend.position = "none",                           # Remove the legend
       panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
-      panel.grid.major = element_blank(),  # Remove major gridlines
-      panel.grid.minor = element_blank(),  # Remove minor gridlines
-      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+      panel.grid.major = element_blank(),                 # Remove major gridlines
+      panel.grid.minor = element_blank()                  # Remove minor gridlines
     )
   
   # Append the plot to the list
@@ -2322,6 +2330,7 @@ for (time_val in c(14, 21, 28, 35)) {
 
 # Arrange the plots in a grid layout (2 rows and 2 columns)
 grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
 
 
 ```
