@@ -44,6 +44,8 @@ library(MASS)
 
 ```{r}
 
+setwd("C:/ATP_PROJECT/Data")
+
 ```
 
 # Load and prepare the data: *Delia radicum*
@@ -660,12 +662,33 @@ for (i in 1:(N-1))
 
 round(cbind(value,critical.range),3)
 
+
 ```
+
 
 # Plots for Delia radicum
 
-```{r, echo=TRUE, eval=TRUE}
 
+```{r, echo=TRUE, eval=TRUE}
+library(ggplot2)
+
+P18 <- ggplot(DPR1, aes(amendment1, survival)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Percent survival of" ~ italic("Delia radicum") ~ "larvae") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 100) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P18)
+
+
+```
+
+#### P18, ALTERNATIVE: shows gridlines, means as white squares, no plot outline, not used
+
+```{r, echo=TRUE, eval=TRUE}
 # Number of larvae + pupae retrieved (% survival)
 P18 <- ggplot(DPR1, aes(amendment1, survival))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
@@ -679,6 +702,35 @@ ggsave("boxplot_P18.pdf", width = 5, height = 4, dpi = 1000) # P18 = Figure 3 in
 ggsave("boxplot_P18.SVG", width = 5, height = 4, dpi = 1000)
 
 
+```
+
+
+##### P19, larval survival, trial 2
+
+
+```{r, echo=TRUE, eval=TRUE}
+library(ggplot2)
+
+P19 <- ggplot(DPR2, aes(amendment2, survival)) + 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Percent survival of" ~ italic("Delia radicum") ~ "larvae")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 100) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P19)
+
+
+```
+
+
+#### P19, ALTERNATIVE, shows gridlines, means as white squares, no plot outline, not used
+
+
+```{r, echo=TRUE, eval=TRUE}
+
 P19 <- ggplot(DPR2, aes(amendment2, survival))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -687,10 +739,38 @@ P19 <- ggplot(DPR2, aes(amendment2, survival))+
   scale_fill_manual(values = c("#91BAD6", "#91BAD6","#91BAD6"))# Dark Sky Blue
 P19 + ylim (0, 100)
 
-ggsave("boxplot_P19.pdf", width = 5, height = 4, dpi = 1000) 
+ggsave("boxplot_P19.pdf", width = 5, height = 4, dpi = 1000)
 
 
-# Pupal weight
+```
+
+
+#### Pupal weight 1
+
+```{r}
+
+library(ggplot2)
+
+P20 <- ggplot(DPW1, aes(amendment1, pupalweight1)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Biomass (mg) of" ~ italic("Delia radicum") ~ "pupae")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 16) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P20)
+
+
+```
+
+
+#### P20, ALTERNATIVE, not used
+
+
+```{r, echo=TRUE, eval=TRUE}
+
 P20 <- ggplot(DPW1, aes(amendment1, pupalweight1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -701,6 +781,34 @@ P20 + ylim (0, 16)
 
 ggsave("boxplot_P20.jpeg", width = 5, height = 4, dpi = 1000)# P19 = Figure 4 in the manuscript
 
+
+```
+
+#### Pupal weight 2
+
+```{r}
+
+library(ggplot2)
+
+P21 <- ggplot(DPW2, aes(amendment2, pupalweight2)) + 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Biomass (mg) of" ~ italic("Delia radicum") ~ "pupae")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 17) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P21)
+
+
+```
+
+
+#### P21, ALTERNATIVE, not used
+
+
+```{r, echo=TRUE, eval=TRUE}
 
 P21 <- ggplot(DPW2, aes(amendment2, pupalweight2))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
@@ -713,7 +821,36 @@ P21 + ylim (0, 17)
 ggsave("boxplot_P21.jpeg", width = 5, height = 4, dpi = 1000)
 
 
-# Fly emergence
+```
+
+
+#### Fly Emergence, plots for this parameter were generated using excel spreadsheet.
+
+
+```{r}
+
+library(ggplot2)
+
+P22 <- ggplot(DFE1, aes(amendment1, percent_per_day1)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Emergence of" ~ italic("Delia radicum") ~ "flies (%)")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 80) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P22)
+
+
+```
+
+
+#### ALTERNATIVE, not used
+
+
+```{r, echo=TRUE, eval=TRUE}
+
 P22 <- ggplot(df_DFE1, aes(amendment1, percent_per_day1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -892,12 +1029,37 @@ emmeans(ref_grid(pois.PPR1, regrid = "response"), pairwise ~ amendment1)
 HSD_test <- emmeans(ref_grid(pois.PPR2, regrid = "response"), pairwise ~ amendment2)
 emmeans(ref_grid(pois.PPR2, regrid = "response"), pairwise ~ amendment2)
 
+
 ```
+
 
 # Plots for Plutella xylostella
 
+Larval survival, Trial 1
+
 ```{r}
 
+library(ggplot2)
+
+P26 <- ggplot(PPR1, aes(amendment1, survival)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Survival of" ~ italic("Plutella xylostella") ~ "larvae (%)")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 100) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P26)
+
+
+```
+
+
+####ALTERNATIVE. Not used
+
+
+```{r}
 P26 <- ggplot(PPR1, aes(amendment1, survival))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -909,6 +1071,34 @@ P26 + ylim (0, 100)
 ggsave("boxplot_P26.pdf", width = 5, height = 4, dpi = 1000)# P26 = Figure 5 in the manuscript
 
 
+```
+
+
+#### Plutella Larval survival, Trial 2
+
+
+```{r}
+
+library(ggplot2)
+
+P27 <- ggplot(PPR2, aes(amendment2, survival)) + 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  labs(x = "Treatment", y = expression("Survival of" ~ italic("Plutella xylostella") ~ "larvae (%)")) +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 80) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P27)
+
+
+```
+
+
+#### P27, ALTERNATIVE, Not used
+
+```{r}
 P27<- ggplot(PPR2, aes(amendment2, survival))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -920,7 +1110,14 @@ P27 + ylim (0, 80)
 ggsave("boxplot_P27.jpeg", width = 5, height = 4, dpi = 1000)
 
 
+```
+
+
 # leaf damage scores
+
+
+```{r}
+
 P28 <- ggplot(PLD1, aes(amendment1, score1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +

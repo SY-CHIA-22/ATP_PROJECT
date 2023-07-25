@@ -37,12 +37,15 @@ renv::restore(packages = c( "ggplot2",
                             "moments", 
                             "glmmTMB", 
                             "multcomp",
-                            "multcompLetters"
+                            "multcompLetters",
+                            "MASS",
+                            "fs"
                             ))
 
 
 # install all other packages
 renv::restore()
+renv::restore(packages = "renv")# install renv 0.17.3 into the project library. 
 
 
 # update all packages
@@ -55,6 +58,8 @@ renv::snapshot()
 
 #check status
 renv::status()
+
+renv::consistency_check()
 
   
   
