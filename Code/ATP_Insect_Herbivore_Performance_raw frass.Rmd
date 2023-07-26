@@ -1115,9 +1115,31 @@ ggsave("boxplot_P27.jpeg", width = 5, height = 4, dpi = 1000)
 
 # leaf damage scores
 
+Trial 1
 
 ```{r}
 
+library(ggplot2)
+
+P28 <- ggplot(PLD1, aes(amendment1, score1)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Leaf feeding damage score (1-7)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 7) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P28)
+
+
+```
+
+
+#### P28, ALTERNATIVE, Not used
+
+
+```{r}
 P28 <- ggplot(PLD1, aes(amendment1, score1))+ 
   geom_boxplot(aes(fill = amendment1), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -1129,6 +1151,36 @@ P28 + ylim (0, 7)
 ggsave("boxplot_P28.jpeg", width = 5, height = 4, dpi = 1000)
 
 
+```
+
+
+# leaf damage scores
+
+Trial 2
+
+
+```{r}
+
+library(ggplot2)
+
+P29 <- ggplot(PLD2, aes(amendment2, score2)) + 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Leaf feeding damage score (1-7)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 7) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P29)
+
+
+```
+
+#### P29, ALTERNATIVE, Not used
+
+```{r}
+
 P29 <- ggplot(PLD2, aes(amendment2, score2))+ 
   geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
   stat_summary(fun = mean, geom = "point", col = "white", shape = 12) +
@@ -1138,6 +1190,29 @@ P29 <- ggplot(PLD2, aes(amendment2, score2))+
 P29 + ylim (0, 7)
 
 ggsave("boxplot_P29.jpeg", width = 5, height = 4, dpi = 1000)
+
+```
+
+
+#### Make a composite plot of P28 and P29
+
+Make sure to install the package "patchwork"
+
+install.packages("patchwork")
+
+
+```{r}
+
+# Load the required libraries
+library(ggplot2)
+library(patchwork)
+
+# Combine the two plots using the `+` operator
+composite_plot <- P28 + P29
+
+# Display the composite plot
+print(composite_plot)
+
 
 ```
 
