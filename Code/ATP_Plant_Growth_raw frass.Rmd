@@ -2512,3 +2512,1398 @@ print(composite_plot)
 
 ```
 
+
+#6.0 FINAL CODES FOR THE MANUSCRIPT 10TH FEBRUARY 2024
+
+
+#6.1 Raw Frass 1, Trial 1
+
+###Leaf area1
+
+By day 35 - 42, the negative effect of Mealworm frass had disappeared
+
+#### Plots leafarea1, Trial 1, *separately*, i.e., for each time point (21, 28, 35 and 42 days since germination)
+
+
+```{r}
+
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+# Filter data for the desired time1 values
+filtered_LA1 <- subset(LA1, time1 %in% c(21, 28, 35, 42))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LA1 for the current time1 value
+  subset_LA1 <- subset(filtered_LA1, time1 == time_val)
+  
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- 100
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA1, aes(x = amendment1, y = leafarea1, fill = amendment1)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("", time_val), x = "Treatment", y = "Leaf area (cm²)") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+#########follow lines of code do  not respond, so are commented out!!!
+# Calculate the mean values
+# mean_values <- tapply(subset_LA1$leafarea1, subset_LA1$amendment1, mean)
+
+# Plot the mean values as white squares
+# points(mean_values, pch = 22, col = "red", bg = "white")
+
+
+
+```
+
+```{r}
+
+```
+
+
+#### Analysis (GLM) - Leafarea1
+
+
+```{r}
+
+# Subset the data for time1 = 21 and fit the GLM model
+model_21 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 21), family = gaussian)
+
+# Print the ANOVA table for time1 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 28), family = gaussian)
+
+# Print the ANOVA table for time1 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 35), family = gaussian)
+
+# Print the ANOVA table for time1 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time1 = 42 and fit the GLM model
+model_42 <- glm(leafarea1 ~ amendment1, data = subset(LA1, time1 == 42), family = gaussian)
+
+# Print the ANOVA table for time1 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+
+```
+
+
+#### Post hoc test - leafarea1
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment1'
+amendment_levels <- levels(LA1$amendment1)
+
+# Perform the Tukey post hoc test for time1 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+Count the number of samples for each time1 value, for each level of amendment1
+
+
+```{r}
+
+sample_counts <- table(LA1$time1, LA1$amendment1)
+
+# Display the sample counts
+print(sample_counts)
+
+
+```
+
+
+#6.2 Raw Frass 2, Trial 2
+
+### Leaf area 2 - Figure_S1
+
+By day 35 - 42, the negative effect of Mealworm frass had disappeared
+
+#### Plots, separately, i.e., for each time point (21, 28, 35 and 42 days since germination).
+
+
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+# Filter data for the desired time2 values
+filtered_LA2 <- subset(LA2, time2 %in% c(21, 28, 35, 42))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time2 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LA2 for the current time2 value
+  subset_LA2 <- subset(filtered_LA2, time2 == time_val)
+  
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- 100
+ # y_max <- max(subset_LA2$leafarea2)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA2, aes(x = amendment2, y = leafarea2, fill = amendment2)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "Leaf area (cm²)") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+```{r}
+
+```
+
+
+#### Analysis (GLM) - Leafarea2
+
+
+```{r}
+
+# Subset the data for time2 = 21 and fit the GLM model
+model_21 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 21), family = gaussian)
+
+# Print the ANOVA table for time2 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 28), family = gaussian)
+
+# Print the ANOVA table for time2 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 35), family = gaussian)
+
+# Print the ANOVA table for time2 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time2 = 42 and fit the GLM model
+model_42 <- glm(leafarea2 ~ amendment2, data = subset(LA2, time2 == 42), family = gaussian)
+
+# Print the ANOVA table for time2 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+
+```
+
+
+Counts (replicates per treatment)
+
+
+```{r}
+
+sample_counts <- table(LA2$time2, LA2$amendment2)
+
+# Display the sample counts
+print(sample_counts)
+
+
+```
+
+
+#### Post hoc test - leafarea2
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LA2$amendment2)
+
+# Perform the Tukey post hoc test for time2 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+#6.3 RawFrass 1, Trial 1
+
+###Number of leaves1
+Analyse leafnumber for each time point (21, 28, 35 and 42 days since germination).
+
+#### Plots - Figure_S2
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+# Filter data for the desired time1 values
+filtered_LN1 <- subset(LN1, time1 %in% c(21, 28, 35, 42))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LN1 for the current time1 value
+  subset_LN1 <- subset(filtered_LN1, time1 == time_val)
+  
+  # Determine the y-axis limits
+  y_min <- 0
+    y_max <- 15 
+  # y_max <- max(subset_LN1$no_leaves1)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LN1, aes(x = amendment1, y = no_leaves1, fill = amendment1)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "Number of leaves") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+```{r}
+
+```
+
+
+#### Analysis (GLM) - LeafNumber1
+
+
+```{r}
+
+# Subset the data for time1 = 21 and fit the GLM model
+model_21 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 21), family = gaussian)
+
+# Print the ANOVA table for time1 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time1 = 28 and fit the GLM model
+model_28 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 28), family = gaussian)
+
+# Print the ANOVA table for time1 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time1 = 35 and fit the GLM model
+model_35 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 35), family = gaussian)
+
+# Print the ANOVA table for time1 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time1 = 42 and fit the GLM model
+model_42 <- glm(no_leaves1 ~ amendment1, data = subset(LN1, time1 == 42), family = gaussian)
+
+# Print the ANOVA table for time1 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+
+```
+
+
+Count the number of samples for each time1 value, for each level of amendment1
+
+
+```{r}
+
+sample_counts <- table(LN1$time1, LN1$amendment1)
+
+# Display the sample counts
+print(sample_counts)
+
+
+```
+
+
+#### Post hoc test - Number of leaves, trial 1
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment1'
+amendment_levels <- levels(LN1$amendment1)
+
+# Perform the Tukey post hoc test for time1 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment1 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+#6.4 RawFrass 2, Trial 2
+
+###Number of leaves2 
+
+#### Plots - Figure_S3
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+# Filter data for the desired time1 values
+filtered_LN2 <- subset(LN2, time2 %in% c(21, 28, 35, 42))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time1 value
+for (time_val in c(21, 28, 35, 42)) {
+  # Subset LN2 for the current time1 value
+  subset_LN2 <- subset(filtered_LN2, time2 == time_val)
+  
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <-15 
+  # y_max <-max(subset_LN2$no_leaves2)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LN2, aes(x = amendment2, y = no_leaves2, fill = amendment2)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "No. leaves") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+```{r}
+
+```
+
+
+#### Analysis (GLM) - *LeafNumber2* (Raw Frass)
+
+
+```{r}
+
+# Subset the data for time2 = 21 and fit the GLM model
+model_21 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 21), family = gaussian)
+
+# Print the ANOVA table for time2 = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+
+# Subset the data for time2 = 28 and fit the GLM model
+model_28 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 28), family = gaussian)
+
+# Print the ANOVA table for time2 = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time2 = 35 and fit the GLM model
+model_35 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 35), family = gaussian)
+
+# Print the ANOVA table for time2 = 35
+anova_table_35<- Anova(model_35)
+print(anova_table_35)
+
+# Subset the data for time2 = 42 and fit the GLM model
+model_42 <- glm(no_leaves2 ~ amendment2, data = subset(LN2, time2 == 42), family = gaussian)
+
+# Print the ANOVA table for time2 = 42
+anova_table_42 <- Anova(model_42)
+print(anova_table_42)
+
+
+```
+
+
+Count the number of samples for each time2 value, for each level of amendment2
+
+
+```{r}
+
+sample_counts <- table(LN2$time2, LN2$amendment2)
+
+# Display the sample counts
+print(sample_counts)
+
+
+```
+
+#### Post hoc test - Number of leaves, trial 2
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_21', 'model_28', 'model_35', 'model_42'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LN2$amendment2)
+
+# Perform the Tukey post hoc test for time2 = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 28
+posthoc_28 <- glht(model_28, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 28
+summary(posthoc_28, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time1 = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time2 = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time2 = 42
+posthoc_42 <- glht(model_42, linfct = mcp(amendment2 = "Tukey"))
+
+# Print the Tukey post hoc test results for time1 = 42
+summary(posthoc_42, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+#6.5 RawFrass 1, Trial 1
+
+## Flowering time 1
+
+#### Plot - Figure_S4
+
+
+```{r}
+library(ggplot2)
+
+
+P7a <- ggplot(FT1, aes(amendment1, days_1)) + 
+  geom_boxplot(aes(fill = amendment1), show.legend = FALSE) +
+  labs(x = "Treatment", y = "Time until flowering (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 100) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P7a)
+
+
+```
+
+#6.6 RawFrass 2, Trial 2
+
+##Flowering time 2
+
+#### Plot
+
+
+```{r}
+
+library(ggplot2)
+
+P7b <- ggplot(FT2, aes(amendment2, days_2)) + 
+  geom_boxplot(aes(fill = amendment2), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Time until flowering (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 100) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P7b)
+
+
+```
+
+#### Make a composite plot of P7a and P7b
+
+Make sure to install the package "patchwork"
+
+install.packages("patchwork")
+
+
+```{r}
+
+# Load the required libraries
+library(ggplot2)
+library(patchwork)
+
+# Combine the two plots using the `+` operator
+composite_plot <- P7a + P7b
+
+# Display the composite plot
+print(composite_plot)
+
+
+```
+
+
+#6.7.1 Incubated frass
+
+###Leaf area
+
+####Plots Leafarea
+
+Figure_6
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+
+# Filter data for the desired time2 values
+filtered_LA_N_incu<- subset(LA_N_incu, time %in% c(14, 21, 28, 35))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  # Subset LA_N_incu for the current time value
+  subset_LA_N_incu <- subset(filtered_LA_N_incu, time == time_val)
+  
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- 50
+  # y_max <- max(subset_LA_N_incu$leafarea) This is used to allow the highest data point det max. value.
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA_N_incu, aes(x = amendment, y = leafarea, fill = amendment)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "Leaf area (cm²)") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+```{r}
+```
+
+
+#### Analysis (GLM)
+
+
+```{r}
+
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leafarea ~ amendment, data = subset(LA_N_incu, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+
+```
+
+
+Counts (replicates per treatment)
+
+
+```{r}
+
+sample_counts <- table(LA_N_incu$time, LA_N_incu$amendment)
+
+#Display the sample counts
+print(sample_counts)
+
+
+```
+
+
+####Post hoc test
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_14', 'model_21', 'model_28', 'model_35'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment2'
+amendment_levels <- levels(LA_N_incu$amendment)
+
+
+# Perform the Tukey post hoc test for time = 35
+posthoc_35 <- glht(model_35, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 35
+summary(posthoc_35, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+#6.7.2 Incubated frass
+
+###Number of leaves
+
+####Plots, Figure_S10
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+
+# Filter data for the desired time2 values
+filtered_LA_N_incu <- subset(LA_N_incu, time %in% c(14, 21, 28, 35))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  # Subset LA_N_incu for the current time value
+ subset_LA_N_incu <- subset(filtered_LA_N_incu, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- 15
+# y_max <- max(subset_LA_N_incu$leaf_count, na.rm = TRUE)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA_N_incu, aes(x = amendment, y = leaf_count, fill = amendment)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "No. leaves") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+```{r}
+
+```
+
+
+####Analysis (GLM)
+
+ No significant difference among amendments
+ 
+
+```{r}
+
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leaf_count ~ amendment, data = subset(LA_N_incu, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+
+```
+
+
+Counts (replicates per treatment)
+
+
+```{r}
+
+sample_counts <- table(LA_N_incu$time, LA_N_incu$amendment)
+
+# Display the sample counts
+print(sample_counts)
+
+
+```
+
+
+#6.7.3 Incubated frass
+
+##Flowering time
+
+####Plot, Flowering time
+
+
+```{r}
+library(ggplot2)
+
+P8e <- ggplot(FT_incu, aes(amendment, days_incu)) + 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Time until flowering (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 60) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P8e)
+
+
+
+```
+
+
+#6.8.1 Composted frass
+
+###Leaf area
+
+####Plots, Figure_7
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+
+# Filter data for the desired time2 values
+filtered_LA_N_comp <- subset(LA_N_comp, time %in% c(14, 21, 28, 35))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  # Subset LA_N_incu for the current time value
+ subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
+   
+  
+  # Determine the y-axis limits
+  y_min <- 0
+  y_max <- max(subset_LA_N_comp$leafarea)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA_N_comp, aes(x = amendment, y = leafarea, fill = amendment)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "Leaf area (cm²)") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      legend.position = "none",  # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black")  # Add tick marks on the y-axis
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+```
+
+
+```{r}
+
+```
+
+
+####Analysis (GLM)
+
+
+```{r}
+
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28 <- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leafarea ~ amendment, data = subset(LA_N_comp, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+
+```
+
+
+Count samples, while excluding NAs from the data
+
+
+```{r}
+
+# Exclude NA values from the dataset
+filtered_LA_N_comp <- na.omit(LA_N_comp)
+
+# Counts (replicates per treatment)
+sample_counts <- table(filtered_LA_N_comp$time, filtered_LA_N_comp$amendment)
+
+# Display the sample counts
+print("Counts (replicates per treatment):")
+print(sample_counts)
+
+```
+
+
+####Post hoc test: run codes for model_14 and model_35 separately
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_14'
+
+# Load the necessary library (if not already loaded)
+library(lsmeans)
+
+# Perform the LSD post hoc test
+posthoc_14 <- lsmeans(model_14, pairwise ~ amendment, adjust = "none")
+
+# Print the LSD post hoc test results for time = 14
+summary(posthoc_14, level = 0.05)
+
+
+# Perform the LSD post hoc test
+posthoc_35 <- lsmeans(model_35, pairwise ~ amendment, adjust = "none")
+
+# Print the LSD post hoc test results for time = 
+summary(posthoc_35, level = 0.05)
+
+
+```
+
+#6.8.2 Composted frass
+
+##Number of leaves
+
+####Plots - Figure_S11
+
+
+```{r}
+
+# code below is ok, 
+# uses the *ggplot2* and *gridExtra* packages,
+# but does not display mean values as white squares
+# since adding mean values on boxplots is not a standard requirement,
+# I will adopt this code.
+
+
+# Load the required libraries
+library(ggplot2)
+library(gridExtra)
+
+# Filter data for the desired time2 values
+filtered_LA_N_comp <- subset(LA_N_comp, time %in% c(14, 21, 28, 35))
+
+# Create a list to store the ggplot objects
+plots_list <- list()
+
+# Create separate boxplots for each time value
+for (time_val in c(14, 21, 28, 35)) {
+  # Subset LA_N_comp for the current time value
+  subset_LA_N_comp <- subset(filtered_LA_N_comp, time == time_val)
+   
+  # Determine the y-axis limits
+  y_min <- 0
+
+  #y_max <- max(subset_LA_N_comp$leaf_count, na.rm = TRUE)
+  
+  # Create the ggplot object
+  plot <- ggplot(subset_LA_N_comp, aes(x = amendment, y = leaf_count, fill = amendment)) +
+    geom_boxplot(width = 0.5, color = "black") + #add ',outlier.shape=NA' after "black" to exclude outliers
+    # Boxplot aesthetics
+    labs(title = paste("Plant age =", time_val), x = "Treatment", y = "Number of leaves") +
+    ylim(y_min, y_max) +
+    scale_fill_manual(values = c("#91bad6", "#91bad6", "#91bad6")) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5),  # Do not rotate x-axis text
+      axis.ticks.x = element_line(color = "black"),        # Add tick marks on the x-axis
+      axis.ticks.y = element_line(color = "black"),        # Add tick marks on the y-axis
+      legend.position = "none",                           # Remove the legend
+      panel.border = element_rect(color = "black", fill = NA),  # Add panel borders
+      panel.grid.major = element_blank(),                 # Remove major gridlines
+      panel.grid.minor = element_blank()                  # Remove minor gridlines
+    )
+  
+  # Append the plot to the list
+  plots_list[[length(plots_list) + 1]] <- plot
+}
+
+# Arrange the plots in a grid layout (2 rows and 2 columns)
+grid.arrange(grobs = plots_list, ncol = 2, nrow = 2)
+
+
+
+```
+
+```{r}
+
+```
+
+
+####Analysis (GLM)
+
+ No significant difference among amendments
+ 
+
+```{r}
+
+# Subset the data for time = 14 and fit the GLM model
+model_14 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 14), family = gaussian)
+
+# Print the ANOVA table for time = 14
+anova_table_14 <- Anova(model_14)
+print(anova_table_14)
+
+
+# Subset the data for time = 21 and fit the GLM model
+model_21<- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 21), family = gaussian)
+
+# Print the ANOVA table for time = 21
+anova_table_21 <- Anova(model_21)
+print(anova_table_21)
+
+# Subset the data for time = 28 and fit the GLM model
+model_28 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 28), family = gaussian)
+
+# Print the ANOVA table for time = 28
+anova_table_28<- Anova(model_28)
+print(anova_table_28)
+
+# Subset the data for time = 35 and fit the GLM model
+model_35 <- glm(leaf_count ~ amendment, data = subset(LA_N_comp, time == 35), family = gaussian)
+
+# Print the ANOVA table for time = 35
+anova_table_35 <- Anova(model_35)
+print(anova_table_35)
+
+
+```
+
+
+Count samples, while excluding NAs from the data
+
+
+```{r}
+
+# Obtain summary statistics for the dataset, including NA counts
+summary_stats <- summary(LA_N_comp, na.count = TRUE)
+
+# Display the summary statistics
+print(summary_stats)
+
+
+```
+
+
+####Post hoc test
+
+
+```{r}
+
+# You have already fitted the GLM models and stored them as 'model_14', 'model_21'
+
+# Load the 'multcomp' package
+library(multcomp)
+
+# Create a data frame with the factor levels of 'amendment'
+amendment_levels <- levels(LA_N_comp$amendment)
+
+
+# Perform the Tukey post hoc test for time = 14
+posthoc_14 <- glht(model_14, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 14
+summary(posthoc_14, test = adjusted(type = "holm"), level = 0.05)
+
+# Perform the Tukey post hoc test for time = 21
+posthoc_21 <- glht(model_21, linfct = mcp(amendment = "Tukey"))
+
+# Print the Tukey post hoc test results for time = 21
+summary(posthoc_21, test = adjusted(type = "holm"), level = 0.05)
+
+
+```
+
+
+#6.8.3 Composted frass
+
+##Flowering time
+
+###Plot, Flowering time
+
+
+```{r}
+
+library(ggplot2)
+
+P8f <- ggplot(FT_comp, aes(amendment, days_comp)) + 
+  geom_boxplot(aes(fill = amendment), show.legend = FALSE) + 
+  labs(x = "Treatment", y = "Time until flowering (days)") +
+  scale_fill_manual(values = c("#91BAD6", "#91BAD6", "#91BAD6")) + # Dark Sky Blue
+  ylim(0, 60) +
+  theme(panel.grid = element_blank(),         # Remove gridlines
+        panel.background = element_blank(),   # Remove background color
+        panel.border = element_rect(color = "black", fill = NA))  # Add plot outline
+
+print(P8f)
+
+
+```
+
+
+#### Make a composite plot of P8e and P8f
+
+Make sure to install the package "patchwork"
+
+install.packages("patchwork")
+
+
+```{r}
+
+# Load the required libraries
+library(ggplot2)
+library(patchwork)
+
+# Combine the two plots using the `+` operator
+composite_plot <- P8e + P8f
+
+# Display the composite plot
+print(composite_plot)
+
+
+```
+
+
+
+```{r}
+
+```
+
